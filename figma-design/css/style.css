@@ -1,0 +1,68 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+a{
+	text-decoration: none;
+	color: black;
+}
+body{
+	font-family: "Inter", sans-serif;
+}
+.outer_main{
+	width: 100%;
+}
+.outer_header{
+	width: 100%;
+	background-color: white;
+	box-shadow: 0px 1px 10px 0px gray;
+	padding: 22px;
+	box-sizing: border-box;
+}
+.header{
+	max-width: 1170px;
+	margin: auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.logo img{
+	width: 204px;
+}
+.header_right{
+	display: flex;
+	gap: 10px;
+}
+.chat_with_us{
+	display: flex;
+	border-radius: 8px;
+	border-width: 1px;
+	padding: 10px 18px;
+	gap: 10px;
+	background: #FFFFFF;
+	border: 1px solid #27AE60;
+	box-shadow: 0px 1px 2px 0px #1018280D;
+}
+.chat_with{
+	font-family: Inter;
+	font-weight: 400;
+	font-size: 16px;
+	line-height: 24px;
+	letter-spacing: 0%;
+	text-transform: capitalize;
+	color: #27AE60;
+}
+.callus{
+	border-radius: 8px;
+	padding: 10px 18px;
+	background: linear-gradient(93.77deg, #0ACEFE -6.36%, #2699FB 50.16%);
+	box-shadow: 0px 1px 2px 0px #1018280D;
+	font-weight: 500;
+	font-size: 16px;
+	line-height: 24px;
+	letter-spacing: 0%;
+	color: #FFFFFF;
+	border-width: 1px;
+	border: 1px solid;
+	border-image-source: linear-gradient(93.77deg, #0ACEFE -6.36%, #2699FB 50.16%);
+}

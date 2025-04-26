@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Rotate</title>
+	<style type="text/css">
+		.main{
+			width: 300px;
+			height: 300px;
+			margin: auto;
+			border: 5px solid red;
+			position: relative;
+		}
+		.img1{
+			width: 300px;
+			transition: 2s;
+			height: 300px;
+			border-radius: 50%;
+		}
+		.img2{
+			width: 200px;
+			height: 200px;
+			position: absolute;
+			top: 50px;
+			left: 50px;
+			transition: 2s;
+			border-radius: 50%;
+		}
+		.img3{
+			width: 100px;
+			position: absolute;
+			top: 100px;
+			left: 100px;
+			height: 100px;
+			transition: 2s;
+			border-radius: 50%;
+		}
+		.main:hover .img2{
+			transform: rotate(-360deg);
+		}
+		.main:hover .img1,.main:hover .img3{
+			transform: rotateX(360deg);
+		}
+		button{
+			padding: 10px 25px;
+			background: red;
+			position: fixed;
+			right: -46px;
+			border: none;
+			top:30%;
+			color: white;
+			transform: rotate(90deg);
+		}
+	</style>
+</head>
+<body>
+	<button>Enquire Now</button>
+	<div class="main">
+		<img src="1.jpg" class="img1" />
+		<img src="2.jpg" class="img2">
+		<img src="3.jpg" class="img3">
+	</div>
+</body>
+</html>

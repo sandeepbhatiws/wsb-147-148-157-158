@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Perfect Number</title>
+    </head>
+    <body>
+
+        <script>
+
+            var number = Number(prompt('Enter the Number'));
+            var sum = 0;
+
+            for(var i =1; i < number; i++){
+                if(number % i == 0){
+                    sum += i;    // sum = sum+i;
+                }
+            }
+
+            if(number == sum){
+                document.write('<h1>Perfect Number</h1>')
+            } else {
+                document.write('<h1>Not a Perfect Number</h1>')
+            }
+        </script>
+    </body>
+</html>

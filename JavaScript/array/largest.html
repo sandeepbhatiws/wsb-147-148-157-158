@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Largest Elements</title>
+</head>
+<body>
+
+    
+
+    <script>
+        var numbers = [7,3,15,12,18,25,35,65,100,34,2,54];
+
+        var output = numbers[0];
+
+        console.log('output value ', output);
+        
+        for(var value of numbers){
+            console.log(value);
+            if(value > output){
+                // console.log(value);
+                output = value;
+                console.log('output value ', output);
+            }
+            
+        }
+
+        console.log('largest value ', output);
+
+
+
+    </script>
+</body>
+</html>

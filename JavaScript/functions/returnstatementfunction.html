@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <title>Return Statement Function</title>
+    </head>
+    <body>
+        <button onclick="sum_number()" >Sum of Number</button>
+
+        <script>
+            function addition(y, x){
+                console.log('A - ', x);
+                console.log('B - ', y);
+
+                console.log(x+y);
+
+                return x+y;
+            }
+
+
+            function sum_number(){
+                var a = parseInt(prompt('Enter the value of a')); 
+                var b = parseInt(prompt('Enter the value of b'));
+
+                var output = addition(a, b);
+
+                console.log(output*5);
+            }
+
+        </script>
+    </body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Lower Number</title>
+</head>
+<body>
+
+    <script>
+         var numbers = [43,23,11,67,34,88,43,100,23,21,78];
+         
+         var  lowerValue = numbers[0];
+
+
+         for(var data of numbers){
+            console.log(data);
+            if(data < lowerValue){
+                lowerValue = data;
+            }
+         }
+
+         console.log('Output ',lowerValue);
+
+    </script>
+</body>
+</html>

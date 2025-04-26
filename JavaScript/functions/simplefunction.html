@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Simple Function</title>
+    </head>
+    <body>
+        <button onclick="hello()" >Click Me</button>
+        <button onclick="addition()" >Addition </button>
+        <button onclick="result()" >View Result </button>
+
+        <script>
+
+            function hello(){
+                console.log('hello');
+            }
+
+            var c = 0;
+
+            function addition(){
+
+                var a = prompt('Enter the value of a'); 
+                var b = prompt('Enter the value of b');
+
+                c =  Number(a) + Number(b);
+                
+                // console.log(c);
+            }
+
+            function result(){
+                console.log(c);
+            }
+
+
+            // hello()
+        </script>
+    </body>
+</html>

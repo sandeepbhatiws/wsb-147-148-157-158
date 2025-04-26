@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <title>Even Number</title>
+    </head>
+    <body>
+
+
+        <script>
+
+            var start = Number(prompt('Starting Number'));
+            var end = Number(prompt('Ending Number'));
+
+            var sum = 0;
+
+
+            for(var i = start; i <= end; i++){
+                if(i % 2 == 0){
+                    sum += i;    // sum = sum + i;
+                    console.log(i);
+                }
+            }
+
+            console.log(sum);
+        </script>
+    </body>
+</html>

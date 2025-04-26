@@ -1,0 +1,41 @@
+<html>
+    <head>
+        <title>All Events</title>
+    </head>
+    <body>
+        <button onclick="getValue()" >On Click</button>
+        <button ondblclick="getValue()" >On Double Click</button>
+        <button onmouseover="getValue()"  onmouseout="getValueOut()">On Mouse Over / Out </button>
+        <button onmousedown="getValue()"  onmouseup="getValueOut()">On Mouse Down / UP </button>
+        <button onmousemove="getValue()" >On Mouse Move</button>
+        <button onmousewheel="getValue()" >On Mouse Wheel</button>
+
+        <input type="text" onfocus="getValue()" onblur="getValueOut()"/>
+
+        <input type="text" onchange="getInputValue(this)"/>
+
+        <select onchange="getInputValue(this)">
+            <option>HTMl</option>
+            <option>CSS</option>
+        </select>
+
+
+
+        <script>
+            function getInputValue(i){
+                console.log(i.value);
+            }
+
+
+            function getValue(){
+                console.log('Hello');
+            }
+
+            function getValueOut(){
+                console.log('World');
+            }
+
+        </script>
+    </body>
+
+</html>

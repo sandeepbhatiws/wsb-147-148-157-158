@@ -1,0 +1,110 @@
+*{
+	margin: 0px;
+	padding: 0px;
+}
+a{
+	color: black;
+	text-decoration: none;
+}
+body{
+	font-family: "Roboto", sans-serif;
+}
+.main{
+	width: 100%;
+}
+.outer_header{
+	width: 100%;
+	background: white;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-shadow: 1px 0px 5px 0px gray;
+	padding: 20px 60px;
+	box-sizing: border-box;
+}
+.logo img{
+	width: 55px;
+}
+.outer_menu{
+	display: flex;
+	text-transform: uppercase;
+	font-weight: bold;
+	gap: 40px;
+	font-size: 13px;
+	margin-left: 30px;
+}
+.menu a{
+	color: #282C3F;
+}
+.outer_search{
+	display: flex;
+}
+.header_right{
+	display: flex;
+	gap: 25px;
+	text-align: center;
+	text-transform: capitalize;
+}
+.header_text{
+	font-size: 12px;
+	padding-top: 5px;
+	font-weight: bold;
+}
+.outer_search{
+	flex-basis: 40%;
+	border-radius: 5px;
+	padding: 10px 15px;
+	align-items: center;
+	background: #F5F5F6;
+}
+.search{
+	flex-basis: 10%;
+    padding: 0px 10px;
+    box-sizing: border-box;
+    color: #717288;
+}
+.search_box{
+	flex-basis: 90%;
+}
+.search_box input{
+	width: 100%;
+	padding: 5px;
+	box-sizing: border-box;
+	border: 0px;
+	background: #F5F5F6;
+}
+
+.search_box input:focus{
+	outline: none;
+}
+.outer_banner{
+	width: 100%;
+}
+.banner{
+	width: 100%;
+	margin-top: 40px;
+}
+.banner img{
+	width: 100%;
+}
+.outer_medal{
+	width: 100%;
+}
+.medal_heading{
+	padding: 60px;
+	text-transform: uppercase;
+}
+.medal_images{
+	display: flex;
+}
+.medal img{
+	width: 100%;
+}
+.category_images{
+	flex-wrap: wrap;
+	justify-content: center;
+}
+.category{
+	flex-basis: 16.66%;
+/*	flex-grow: 1;*/
+}

@@ -1,0 +1,72 @@
+<html>
+    <head>
+        <title>Array</title>
+    </head>
+    <body>
+
+        <script>
+
+            var numbers = [];   //  empty arrray
+            var names = new Array(); // empty array
+
+
+        //  console.log(numbers.length)   //   0
+        //  console.log(names.length)     //     0
+
+            var numbers = ['Rahul', 'rahul@gmail.com', 32, true, ''];
+            // console.log(numbers.length)   //   3
+
+
+            var names = new Array('Rahul', 'rahul@gmail.com', 32);
+            // console.log(names.length)   //   3
+
+            console.log(names);
+
+            names[3] = 'Ravi';
+
+            console.log(names);
+
+            names[3] = 'Gopal';
+            console.log(names);
+            console.log(names.length)    // 4
+
+            names[9] = 'gopal@gmail.com';
+
+            names['name'] = 'Rohan';
+
+            console.log(names);
+
+            document.write(names);
+            console.log(names.toString());
+
+            console.log(names.length)    // 10
+
+
+            var names = ['Rahul', 'John'];
+
+            namesCount = names.length;
+            names[namesCount] = 'Mohan';
+
+            // console.log(names.push('Ashish', 'Yogesh'));    // it  will return length
+
+            names.push('Ashish', 'Yogesh');   // add value in last
+
+            console.log(names);
+
+            console.log(names.pop());      // Yogesh
+
+            names.pop();   
+            console.log(names);
+
+
+            for(var i =0; i < names.length; i++){
+                document.write('<br>'+names[i]);
+            }
+
+
+
+
+
+        </script>
+    </body>
+</html>

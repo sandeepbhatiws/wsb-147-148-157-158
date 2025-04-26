@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Union Array</title>
+</head>
+
+<body>
+
+
+
+    <script>
+        var a = [1, 2, 3, 2];
+        var b = [3, 4, 5];
+        var c = [];
+
+
+        for (var i of a) {
+            if (c.includes(i)) {
+
+            } else {
+                c.push(i);
+            }
+
+        }
+
+        for (var i of b) {
+            if (c.includes(i)) {
+
+            } else {
+                c.push(i);
+            }
+        }
+
+        console.log(c);
+
+
+
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Bulb On Off</title>
+
+    <style>
+    </style>
+</head>
+<body>
+
+    <!-- <button onclick="onBulb()">On</button>
+    <img src="images/off.gif"/>
+    <button onclick="offBulb()">Off</button>
+
+    <script>
+        function onBulb(){
+            document.querySelector('img').src = 'images/on.gif';
+        }
+
+        function offBulb(){
+            document.querySelector('img').src = 'images/off.gif';
+        }
+    </script> -->
+
+
+
+
+    <!-- <button onclick="onOffBulb('images/on.gif')">On</button>
+    <img src="images/off.gif"/>
+    <button onclick="onOffBulb('images/off.gif')">Off</button>
+
+    <script>
+        function onOffBulb(imgName){
+            document.querySelector('img').src = imgName;
+        }
+    </script> -->
+
+
+
+    <!-- <img src="images/off.gif"/>
+    <button onclick="onOffBulb()" id="on_off">ON</button>
+
+    <script>
+        function onOffBulb(){
+
+            var onOff = document.getElementById('on_off');
+            if(onOff.innerText == 'ON'){
+                document.querySelector('img').src = 'images/on.gif';
+                onOff.innerText = 'OFF';
+            } else {
+                document.querySelector('img').src = 'images/off.gif';
+                onOff.innerText = 'ON';
+            }            
+        }
+    </script> -->
+
+
+    <img src="images/off.gif"/>
+    <button type="button" onclick="onOffBulb(this)">ON</button>
+
+    <script>
+        function onOffBulb(i){
+            console.log(i.type);
+            console.log(i.innerText)
+
+
+            if(i.innerText == 'ON'){
+                document.querySelector('img').src = 'images/on.gif';
+                i.innerText = 'OFF';
+            } else {
+                document.querySelector('img').src = 'images/off.gif';
+                i.innerText = 'ON';
+            }            
+        }
+    </script>
+</body>
+</html>
