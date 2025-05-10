@@ -1,10 +1,16 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import './assets/css/style.css';
+import Home from './Home'
+
+
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <Home/>      {/* Open Tag */}
+
+
+    {/* Closed Tag */}
+    {/* <Home></Home>     */}
   </StrictMode>,
 )
