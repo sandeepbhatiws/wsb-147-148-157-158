@@ -4,6 +4,8 @@ import logo from './assets/react.svg'
 export default function Home() {
 
     var title = 'Welcome To WsCube Tech Company';
+    var status = 0;
+    var className = 0;
 
     return (
         <>
@@ -13,9 +15,28 @@ export default function Home() {
 
                 <h1>{ title }</h1>
             </div>
-            <div className="row">
-                <h1>Welcome To WsCube Tech</h1>
+
+            {
+                (status == 1)
+                ?
+                    <div className="row">
+                        <h1>Welcome To WsCube Tech</h1>
+                    </div>
+                : 
+                    ""
+            }
+
+            <div className="row" style={{ display : ` ${ (className == 1) ? 'none' : '' }` }}>
+                <h1>Welcome To WsCube Tech</h1> 
             </div>
+
+            <div className={ (className == 1) ? 'row display' : 'row' }>
+                <h1>Welcome To WsCube Tech</h1> 
+            </div>
+
+
+
+            
         </>
 
     )
