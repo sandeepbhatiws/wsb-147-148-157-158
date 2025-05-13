@@ -1,8 +1,5 @@
 
-
 var questions = document.querySelectorAll('.question');
-
-
 
 questions.forEach((v,i) => {
     v.addEventListener('click', (event) => {
