@@ -10,13 +10,21 @@ export default function Home() {
 
     let [states, setStates] = useState([]);
     let [userInfo, setUserInfo] = useState(users ?? []);
+    let [singleUser, setSingleUser] = useState({
+      id: -1,
+      name : '',
+      email : '',
+      mobile_number : '',
+      country_name : '',
+      state_name : ''
+    });
 
 
   return (
     <>
-        <UserForm states={states} setStates={setStates} userInfo={userInfo} setUserInfo={setUserInfo}/>
+        <UserForm states={states} setStates={setStates} userInfo={userInfo} setUserInfo={setUserInfo} singleUser={singleUser} setSingleUser={setSingleUser}/>
 
-        <UserData userInfo={userInfo} setUserInfo={setUserInfo}/>
+        <UserData userInfo={userInfo} setUserInfo={setUserInfo} singleUser={singleUser} setSingleUser={setSingleUser}/>
     </>
   )
 }
