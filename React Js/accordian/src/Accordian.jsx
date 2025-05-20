@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import data from './faqdata.js';
 import FaqHeading from './FaqHeading.jsx';
 import FaqSection from './FaqSection.jsx';
@@ -8,6 +8,9 @@ export default function Accordian() {
     const [faqs, setFaqs] = useState(data);
     const [currentIndex, setCurrentIndex] = useState(0);
 
+    useEffect(() => {
+        console.log('Hello');
+    },[currentIndex]);
     
 
     return (
