@@ -1,9 +1,11 @@
 import React from 'react'
 import { IoSearch } from "react-icons/io5";
+import { ToastContainer } from 'react-toastify';
 
 export default function Header() {
     return (
         <>
+            <ToastContainer/>
             <header class="sticky-top bg-white border-bottom shadow-sm">
                 <div class="container py-3">
                     <div class="row align-items-center">

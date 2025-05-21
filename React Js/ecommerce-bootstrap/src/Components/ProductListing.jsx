@@ -3,29 +3,38 @@ import Header from './Coomon/Header'
 import Breadcrum from './Coomon/Breadcrum'
 import Footer from './Coomon/Footer'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 
 export default function ProductListing() {
 
     const [categories, setCategories] = useState([]);
+    const [brands, setBrands] = useState([]);
 
     useEffect(() => {
-        var api = 'https://dummyjson.com/products/categories';
+        var api = 'https://wscubetech.co/ecommerce-api/categories.php';
         
         axios.get(api)
         .then((result) => {
-            setCategories(result.data);
-            console.log('Hello');
+            setCategories(result.data.data);
         })
         .catch(() => {
-            
+            toast.error('Something went wrong');
+        });
+    },[]);
+
+    useEffect(() => {
+        var api = 'https://wscubetech.co/ecommerce-api/brands.php';
+        
+        axios.get(api)
+        .then((result) => {
+            setBrands(result.data.data);
+        })
+        .catch(() => {
+            toast.error('Something went wrong');
         });
     },[]);
 
     
-
-
-
-
     return (
         <>
             <Header />
@@ -54,21 +63,28 @@ export default function ProductListing() {
                                 </div>
 
                                 {/* <!-- Categories Filter --> */}
-                                <div class="mb-4">
+                                <div class="mb-4 section-filter">
                                     <h6 class="fw-bold mb-3">Categories</h6>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="category1"/>
-                                            <label class="form-check-label" for="category1">Electronics</label>
-                                    </div>
+                                    
+                                    {
+                                        categories.map((v,i) => {
+                                            return(
+                                                <FilterCategories key={i} data={v}/>
+                                            )
+                                        })
+                                    }
                                 </div>
 
                                 {/* <!-- Brands Filter --> */}
-                                <div class="mb-4">
+                                <div class="mb-4 section-filter">
                                     <h6 class="fw-bold mb-3">Brands</h6>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="brand1"/>
-                                            <label class="form-check-label" for="brand1">Samsung</label>
-                                    </div>
+                                    {
+                                        brands.map((v,i) => {
+                                            return(
+                                                <FilterBrands key={i} data={v}/>
+                                            )
+                                        })
+                                    }
                                 </div>
 
                                 {/* <!-- Price Range Filter --> */}
@@ -105,21 +121,27 @@ export default function ProductListing() {
                             </div>
                             <div class="offcanvas-body">
                                 {/* <!-- Categories Filter --> */}
-                                <div class="mb-4">
+                                <div class="mb-4 section-filter">
                                     <h6 class="fw-bold mb-3">Categories</h6>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="mCategory1"/>
-                                            <label class="form-check-label" for="mCategory1">Electronics</label>
-                                    </div>
+                                    {
+                                        categories.map((v,i) => {
+                                            return(
+                                                <FilterCategories key={i} data={v}/>
+                                            )
+                                        })
+                                    }
                                 </div>
 
                                 {/* <!-- Brands Filter --> */}
-                                <div class="mb-4">
+                                <div class="mb-4 section-filter">
                                     <h6 class="fw-bold mb-3">Brands</h6>
-                                    <div class="form-check mb-2">
-                                        <input class="form-check-input" type="checkbox" id="mBrand1"/>
-                                            <label class="form-check-label" for="mBrand1">Samsung</label>
-                                    </div>
+                                    {
+                                        brands.map((v,i) => {
+                                            return(
+                                                <FilterBrands key={i} data={v}/>
+                                            )
+                                        })
+                                    }
                                 </div>
 
                                 {/* <!-- Price Range Filter --> */}
@@ -219,5 +241,24 @@ export default function ProductListing() {
 
             <Footer />
         </>
+    )
+}
+
+
+function FilterCategories({ data }) {
+    return(
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id={data.slug}/>
+                <label class="form-check-label" for={data.slug}>{data.name}</label>
+        </div>
+    )
+}
+
+function FilterBrands({ data }) {
+    return(
+        <div class="form-check mb-2">
+            <input class="form-check-input" type="checkbox" id={data.slug}/>
+                <label class="form-check-label" for={data.slug}>{data.name}</label>
+        </div>
     )
 }
