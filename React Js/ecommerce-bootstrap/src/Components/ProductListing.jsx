@@ -4,11 +4,16 @@ import Breadcrum from './Coomon/Breadcrum'
 import Footer from './Coomon/Footer'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import ProductCard from './ProductCard'
 
 export default function ProductListing() {
 
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalRecords, setTotalRecords] = useState(0);
+    const [sorting, setSorting] = useState('');
 
     useEffect(() => {
         var api = 'https://wscubetech.co/ecommerce-api/categories.php';
@@ -34,6 +39,45 @@ export default function ProductListing() {
         });
     },[]);
 
+    //First Method
+    // useEffect(() => {
+    //     axios.get(`https://wscubetech.co/ecommerce-api/products.php?limit=18&page=${currentPage}`)
+    //     .then((result) => {
+    //         setProducts(result.data.data)
+    //     })
+    //     .catch(() => {
+    //         toast.error('Something went wrong!');
+    //     })
+    // },[currentPage]);
+
+    useEffect(() => {
+        axios.get(`https://wscubetech.co/ecommerce-api/products.php`, {
+            params : {
+                page : currentPage,
+                limit : 15,
+                sorting : sorting,
+                name : '',
+                price_from : '',
+                price_to : '',
+                discount_from : '',
+                discount_to : '',
+                rating : '',
+                brands : '',
+                categories : '',
+            }
+        })
+        .then((result) => {
+            setProducts(result.data.data)
+            setTotalRecords(result.data.total_records)
+        })
+        .catch(() => {
+            toast.error('Something went wrong!');
+        })
+    },[currentPage, sorting]);
+
+    const filterProducts = (event) => {
+        setSorting(event.target.value)
+    }
     
     return (
         <>
@@ -180,19 +224,19 @@ export default function ProductListing() {
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col-md-6 mb-2 mb-md-0">
-                                        <h6 class="mb-0">12 Products</h6>
+                                        <h6 class="mb-0">{totalRecords} Products</h6>
                                         <small class="text-muted">Filtered results</small>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="d-flex align-items-center justify-content-md-end">
                                             <i class="fa fa-sort text-muted me-2"></i>
                                             <span class="text-nowrap me-2 d-none d-sm-inline">Sort by:</span>
-                                            <select class="form-select form-select-sm w-auto">
-                                                <option value="featured">Featured</option>
-                                                <option value="newest">Newest</option>
-                                                <option value="price_low">Price: Low to High</option>
-                                                <option value="price_high">Price: High to Low</option>
-                                                <option value="rating">Top Rated</option>
+                                            <select class="form-select form-select-sm w-auto" onChange={ filterProducts }>
+                                                <option value="">Sort By -</option>
+                                                <option value="1">Name : A to Z</option>
+                                                <option value="2">Name : Z to A</option>
+                                                <option value="3">Price: Low to High</option>
+                                                <option value="4">Price: High to Low</option>
                                             </select>
                                         </div>
                                     </div>
@@ -203,37 +247,16 @@ export default function ProductListing() {
                         {/* <!-- Product Grid --> */}
                         <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
                             {/* <!-- Product 1 --> */}
-                            <div class="col">
-                                <div class="card h-100 product-card">
-                                    <div class="position-relative">
-                                        <img src="https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?q=80&w=500&auto=format&fit=crop" class="card-img-top" alt="Ultra HD 4K Smart TV"/>
-                                            <span class="position-absolute top-0 start-0 badge bg-danger m-2">Sale</span>
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">Ultra HD 4K Smart TV 55-inch</h5>
-                                        <p class="card-text text-muted small mb-0">Samsung</p>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <div class="text-warning me-1">
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star"></i>
-                                                <i class="fa fa-star-half-alt"></i>
-                                            </div>
-                                            <span class="text-muted small">4.5</span>
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <div>
-                                                <span class="fs-5 fw-bold">$699.99</span>
-                                                <span class="text-decoration-line-through text-muted ms-2">$899.99</span>
-                                            </div>
-                                            <button class="btn btn-sm btn-outline-primary">
-                                                <i class="fa fa-shopping-cart"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
+                            {
+                                products.map((v,i) => {
+                                    return(
+                                        <ProductCard key={i} data={v}/>
+                                    )
+                                })
+                            }
+
+                            
                         </div>
                     </div>
                 </div>
