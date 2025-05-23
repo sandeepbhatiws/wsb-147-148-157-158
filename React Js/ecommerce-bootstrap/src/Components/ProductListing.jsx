@@ -14,6 +14,9 @@ export default function ProductListing() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalRecords, setTotalRecords] = useState(0);
     const [sorting, setSorting] = useState('');
+    const [filterAllCategories, setFilterAllCategories] = useState([]);
+    const [priceFrom, setPriceFrom] = useState('');
+    const [priceTo, setPriceTo] = useState('');
 
     useEffect(() => {
         var api = 'https://wscubetech.co/ecommerce-api/categories.php';
@@ -57,13 +60,13 @@ export default function ProductListing() {
                 limit : 15,
                 sorting : sorting,
                 name : '',
-                price_from : '',
-                price_to : '',
+                price_from : priceFrom,
+                price_to : priceTo,
                 discount_from : '',
                 discount_to : '',
                 rating : '',
                 brands : '',
-                categories : '',
+                categories : filterAllCategories.toString(),
             }
         })
         .then((result) => {
@@ -73,10 +76,40 @@ export default function ProductListing() {
         .catch(() => {
             toast.error('Something went wrong!');
         })
-    },[currentPage, sorting]);
+    },[currentPage, sorting, filterAllCategories, priceFrom, priceTo]);
 
     const filterProducts = (event) => {
+        console.log(event.target.value)
         setSorting(event.target.value)
+    }
+
+    const filterCategoryData = (slug) => {
+        
+        if(filterAllCategories.includes(slug)){
+            
+            var data = filterAllCategories.filter((v) => {
+                if(slug != v){
+                    return v;
+                }
+            })
+
+            var data = [...data];
+            setFilterAllCategories(data);
+            console.log(data);
+
+        } else {
+            const data = [...filterAllCategories, slug];
+            setFilterAllCategories(data);
+            console.log(data);
+        }
+    }
+
+    const clearAll = () => {
+        setFilterAllCategories([]);
+    }
+
+    const filterPrice = (event) => {
+        setPriceTo(event.target.value);
     }
     
     return (
@@ -103,7 +136,7 @@ export default function ProductListing() {
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5 class="card-title mb-0">Filters</h5>
-                                    <button class="btn btn-sm btn-link text-decoration-none p-0">Clear All</button>
+                                    <button onClick={ clearAll } class="btn btn-sm btn-link text-decoration-none p-0">Clear All</button>
                                 </div>
 
                                 {/* <!-- Categories Filter --> */}
@@ -113,7 +146,7 @@ export default function ProductListing() {
                                     {
                                         categories.map((v,i) => {
                                             return(
-                                                <FilterCategories key={i} data={v}/>
+                                                <FilterCategories key={i} data={v} filterCategory={filterCategoryData} filterAllCategories = {filterAllCategories}/>
                                             )
                                         })
                                     }
@@ -136,9 +169,17 @@ export default function ProductListing() {
                                     <h6 class="fw-bold mb-3">Price Range</h6>
                                     <div class="d-flex justify-content-between mb-2">
                                         <span>$0</span>
-                                        <span>$1500</span>
+                                        <span>
+                                            {
+                                                (priceTo != '')
+                                                ?
+                                                priceTo
+                                                :
+                                                '1500'
+                                            }
+                                        </span>
                                     </div>
-                                    <input type="range" class="form-range" min="0" max="1500" step="10" id="priceRange"/>
+                                    <input type="range" class="form-range" min="0" max="1500" step="10" id="priceRange" onChange={ filterPrice }/>
                                         <div class="row g-2 mt-2">
                                             <div class="col-6">
                                                 <div class="input-group input-group-sm">
@@ -170,7 +211,7 @@ export default function ProductListing() {
                                     {
                                         categories.map((v,i) => {
                                             return(
-                                                <FilterCategories key={i} data={v}/>
+                                                <FilterCategories key={i} data={v} filterCategory={filterCategoryData} filterAllCategories={filterAllCategories}/>
                                             )
                                         })
                                     }
@@ -195,7 +236,7 @@ export default function ProductListing() {
                                         <span>$0</span>
                                         <span>$1500</span>
                                     </div>
-                                    <input type="range" class="form-range" min="0" max="1500" step="10" id="mobilePriceRange"/>
+                                    <input type="range" class="form-range" min="0" max="1500" step="10" id="mobilePriceRange" onChange={ filterPrice }/>
                                         <div class="row g-2 mt-2">
                                             <div class="col-6">
                                                 <div class="input-group input-group-sm">
@@ -268,10 +309,10 @@ export default function ProductListing() {
 }
 
 
-function FilterCategories({ data }) {
+function FilterCategories({ data, filterCategory, filterAllCategories }) {
     return(
         <div class="form-check mb-2">
-            <input class="form-check-input" type="checkbox" id={data.slug}/>
+            <input class="form-check-input" onClick={ () => filterCategory(data.slug) } type="checkbox" checked={ filterAllCategories.includes(data.slug) ? 'checked' : '' }  id={data.slug}/>
                 <label class="form-check-label" for={data.slug}>{data.name}</label>
         </div>
     )

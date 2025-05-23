@@ -9,7 +9,5 @@ import './assets/css/style.css'
 import ProductListing from './Components/ProductListing'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <ProductListing/>
-  </StrictMode>,
 )
