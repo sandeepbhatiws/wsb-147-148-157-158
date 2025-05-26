@@ -7,6 +7,8 @@ import { toast } from 'react-toastify'
 import ProductCard from './ProductCard'
 import { IoSearch } from "react-icons/io5";
 import Pagination from 'react-bootstrap/Pagination';
+import ResponsivePagination from 'react-responsive-pagination';
+import 'react-responsive-pagination/themes/classic-light-dark.css';
 
 export default function ProductListing() {
 
@@ -87,9 +89,9 @@ export default function ProductListing() {
 
     useEffect(() => {
         
-        // var allPages = '';
+        var allPages = [];
         for (let i = 1; i <= totalPages; i++) {
-            allPages.push(<Pagination.Item key={i}>{i}</Pagination.Item>);
+            allPages.push(i);
         }
         setAllPages(allPages);
         console.log(allPages);
@@ -169,7 +171,6 @@ export default function ProductListing() {
 
     return (
         <>
-            <Header />
             <Breadcrum />
 
             <div class="container py-5">
@@ -370,16 +371,25 @@ export default function ProductListing() {
                             <Pagination>
                                 <Pagination.First onClick={ firstPage } />
                                 <Pagination.Prev onClick={ previousPage } />
-                                { allPages }
+                                { allPages.map((v,i) => {
+                                       return(
+                                        <Pagination.Item key={i}>{v}</Pagination.Item>
+                                       ) 
+                                }) }
                                 <Pagination.Next onClick={ nextPage } />
                                 <Pagination.Last onClick={ lastPage } />
                                 </Pagination>
+
+
+                            <ResponsivePagination
+                                current={currentPage}
+                                total={totalPages}
+                                onPageChange={setCurrentPage}
+                                />
                         </div>
                     </div>
                 </div>
             </div>
-
-            <Footer />
         </>
     )
 }
