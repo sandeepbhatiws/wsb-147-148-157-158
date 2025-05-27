@@ -9,21 +9,37 @@ import { IoSearch } from "react-icons/io5";
 import Pagination from 'react-bootstrap/Pagination';
 import ResponsivePagination from 'react-responsive-pagination';
 import 'react-responsive-pagination/themes/classic-light-dark.css';
+import { useParams } from 'react-router-dom'
 
 export default function ProductListing() {
 
+    const params = useParams();
+
+    const [filterAllCategories, setFilterAllCategories] = useState([]);
+
+    useEffect(() => {
+        var slug = [];
+        if(params.slug){
+            slug.push(params.slug);
+        }
+
+        console.log(params.slug);
+        setFilterAllCategories(slug);
+    },[]);
+    
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
     const [products, setProducts] = useState([]);
     var [currentPage, setCurrentPage] = useState(1);
     const [totalRecords, setTotalRecords] = useState(0);
     const [sorting, setSorting] = useState('');
-    const [filterAllCategories, setFilterAllCategories] = useState([]);
+    
     const [productName, setProductName] = useState('');
     const [priceFrom, setPriceFrom] = useState('');
     const [priceTo, setPriceTo] = useState('');
     const [totalPages, setTotalPages] = useState('');
     const [allPages, setAllPages] = useState([]);
+
 
     useEffect(() => {
         var api = 'https://wscubetech.co/ecommerce-api/categories.php';
@@ -61,6 +77,7 @@ export default function ProductListing() {
     // },[currentPage]);
 
     useEffect(() => {
+
         axios.get(`https://wscubetech.co/ecommerce-api/products.php`, {
             params: {
                 page: currentPage,
@@ -73,7 +90,7 @@ export default function ProductListing() {
                 discount_to: '',
                 rating: '',
                 brands: '',
-                categories: filterAllCategories.toString(),
+                categories: filterAllCategories.toString()
             }
         })
             .then((result) => {
@@ -84,11 +101,11 @@ export default function ProductListing() {
             .catch(() => {
                 toast.error('Something went wrong!');
             })
-    }, [currentPage, sorting, filterAllCategories, priceFrom, priceTo, productName]);
+    }, [ currentPage, sorting, filterAllCategories, priceFrom, priceTo, productName]);
 
 
     useEffect(() => {
-        
+
         var allPages = [];
         for (let i = 1; i <= totalPages; i++) {
             allPages.push(i);
@@ -96,8 +113,8 @@ export default function ProductListing() {
         setAllPages(allPages);
         console.log(allPages);
 
-    })
-    
+    }, [])
+
 
 
     const firstPage = () => {
@@ -105,13 +122,13 @@ export default function ProductListing() {
     }
 
     const previousPage = () => {
-        if(currentPage > 1){
+        if (currentPage > 1) {
             setCurrentPage(currentPage--);
         }
     }
 
     const nextPage = () => {
-        if(currentPage < totalPages){
+        if (currentPage < totalPages) {
             setCurrentPage(currentPage++);
         }
     }
@@ -353,40 +370,53 @@ export default function ProductListing() {
                         </div>
 
                         {/* <!-- Product Grid --> */}
-                        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
-                            {/* <!-- Product 1 --> */}
 
-                            {
-                                products.map((v, i) => {
-                                    return (
-                                        <ProductCard key={i} data={v} />
-                                    )
-                                })
-                            }
+                        {
+                            products.length > 0
 
+                                ?
+                                <>
+                                    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 g-4">
+                                        {/* <!-- Product 1 --> */}
 
-                        </div>
-
-                        <div className='row'>
-                            <Pagination>
-                                <Pagination.First onClick={ firstPage } />
-                                <Pagination.Prev onClick={ previousPage } />
-                                { allPages.map((v,i) => {
-                                       return(
-                                        <Pagination.Item key={i}>{v}</Pagination.Item>
-                                       ) 
-                                }) }
-                                <Pagination.Next onClick={ nextPage } />
-                                <Pagination.Last onClick={ lastPage } />
-                                </Pagination>
+                                        {
+                                            products.map((v, i) => {
+                                                return (
+                                                    <ProductCard key={i} data={v} />
+                                                )
+                                            })
+                                        }
 
 
-                            <ResponsivePagination
-                                current={currentPage}
-                                total={totalPages}
-                                onPageChange={setCurrentPage}
-                                />
-                        </div>
+                                    </div>
+
+                                    <div className='row'>
+                                        <Pagination>
+                                            <Pagination.First onClick={firstPage} />
+                                            <Pagination.Prev onClick={previousPage} />
+                                            {allPages.map((v, i) => {
+                                                return (
+                                                    <Pagination.Item key={i}>{v}</Pagination.Item>
+                                                )
+                                            })}
+                                            <Pagination.Next onClick={nextPage} />
+                                            <Pagination.Last onClick={lastPage} />
+                                        </Pagination>
+
+
+                                        <ResponsivePagination
+                                            current={currentPage}
+                                            total={totalPages}
+                                            onPageChange={setCurrentPage}
+                                        />
+                                    </div>
+                                </>
+                                :
+
+                                'No Record founds'
+                        }
+
+
                     </div>
                 </div>
             </div>

@@ -1,9 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
 export default function ProductCard({data}) {
 
+    const [rating, setRating] = useState([]);
+
     var discount_price = data.price * data.discount_percentage/100;
     var discount_price = data.price - discount_price;
+
+    useEffect(() => {
+        var rating = [];
+        for (let i = 1; i <= data.rating; i++) {
+            rating.push(i);
+        }
+        setRating(rating);
+
+    },[])
 
     return (
         <>
@@ -21,15 +33,22 @@ export default function ProductCard({data}) {
                         
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title">{ data.name }</h5>
+                        <Link to={`/product-details/${data.id}`}>
+                            <h5 class="card-title">{ data.name }</h5>
+                        </Link>
+                        
                         <p class="card-text text-muted small mb-0">{data.category_name}</p>
                         <div class="d-flex align-items-center mb-2">
                             <div class="text-warning me-1">
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i>
-                                <i class="fa fa-star-half-alt"></i>
+
+                                {
+                                    rating.map((v,i) => {
+                                        return(
+                                            <i class="fa fa-star" key={i}></i>
+                                        )
+                                    })
+                                }
+                                
                             </div>
                             <span class="text-muted small">4.5</span>
                         </div>

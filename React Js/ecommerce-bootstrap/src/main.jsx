@@ -19,7 +19,7 @@ createRoot(document.getElementById('root')).render(
             <Route element={<RootLayout/>}>
                 <Route path='/' element={<Home/>} />
                 <Route path='/about-us' element={<AboutUs/>}/>
-                <Route path='/product-listings/:slug?' element={<ProductListing/>}/>
+                <Route path='/product-listings/:slug?/:sub_slug?' element={<ProductListing/>}/>
             </Route>
 
 

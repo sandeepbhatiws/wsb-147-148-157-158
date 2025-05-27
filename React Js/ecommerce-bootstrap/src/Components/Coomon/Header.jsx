@@ -1,8 +1,25 @@
-import React from 'react'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
 import { IoSearch } from "react-icons/io5";
-import { ToastContainer } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
 
 export default function Header() {
+
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        var api = 'https://wscubetech.co/ecommerce-api/categories.php';
+
+        axios.get(api)
+            .then((result) => {
+                setCategories(result.data.data);
+            })
+            .catch(() => {
+                toast.error('Something went wrong');
+            });
+    }, []);
+
     return (
         <>
             <ToastContainer/>
@@ -11,9 +28,9 @@ export default function Header() {
                     <div class="row align-items-center">
                         {/* <!-- Logo --> */}
                         <div class="col-md-3 col-6 mb-2 mb-md-0">
-                            <a href="index.html" class="text-decoration-none">
+                            <Link to="/" class="text-decoration-none">
                                 <h1 class="fs-4 fw-bold m-0">ShopHub</h1>
-                            </a>
+                            </Link>
                         </div>
 
                         {/* <!-- Search --> */}
@@ -29,7 +46,7 @@ export default function Header() {
                         {/* <!-- Navigation --> */}
                         <div class="col-md-4 col-6 text-end order-md-2 order-2">
                             <div class="d-flex justify-content-end align-items-center">
-                                <a href="#" class="btn btn-link text-dark d-none d-md-inline-block">Categories</a>
+                                <Link to="/product-listings" class="btn btn-link text-dark d-none d-md-inline-block">Categories</Link>
                                 <a href="#" class="btn btn-link text-dark d-none d-md-inline-block">Deals</a>
                                 <a href="#" class="btn btn-link text-dark position-relative">
                                     <i class="fa fa-user"></i>
@@ -40,6 +57,28 @@ export default function Header() {
                                         2
                                     </span>
                                 </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+
+            <header class="sticky-top bg-white border-bottom shadow-sm">
+                <div class="container py-3">
+                    <div class="row align-items-center">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-center align-items-center">
+                                {
+                                    categories.map((v,i) => {
+                                        if(i < 9){
+                                            return(
+                                                <Link to={`product-listings/${v.slug}`} key={i} class="btn btn-link text-dark d-none d-md-inline-block">{ v.name }</Link>
+                                            )
+                                        }
+                                        
+                                    })
+                                }
                             </div>
                         </div>
                     </div>
