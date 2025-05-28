@@ -11,6 +11,7 @@ import ProductListing from './Components/ProductListing'
 import Home from './Components/Home';
 import AboutUs from './Components/AboutUs';
 import RootLayout from './Components/RootLayout';
+import ProductDetail from './Components/ProductDetail';
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
@@ -20,6 +21,7 @@ createRoot(document.getElementById('root')).render(
                 <Route path='/' element={<Home/>} />
                 <Route path='/about-us' element={<AboutUs/>}/>
                 <Route path='/product-listings/:slug?/:sub_slug?' element={<ProductListing/>}/>
+                <Route path='/product-details/:id' element={<ProductDetail/>}/>
             </Route>
 
 
