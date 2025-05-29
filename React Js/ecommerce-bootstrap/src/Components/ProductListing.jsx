@@ -18,14 +18,10 @@ export default function ProductListing() {
     const [filterAllCategories, setFilterAllCategories] = useState([]);
 
     useEffect(() => {
-        var slug = [];
         if(params.slug){
-            slug.push(params.slug);
+            setFilterAllCategories([params.slug]);
         }
-
-        console.log(params.slug);
-        setFilterAllCategories(slug);
-    },[]);
+    },[params]);
     
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
@@ -143,6 +139,7 @@ export default function ProductListing() {
     }
 
     const filterCategoryData = (slug) => {
+        setCurrentPage(1)
 
         if (filterAllCategories.includes(slug)) {
 

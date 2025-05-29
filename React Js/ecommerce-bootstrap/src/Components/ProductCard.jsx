@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
+import { ComoonContext } from '../ContextAPI/Context';
+import { toast } from 'react-toastify';
 
 export default function ProductCard({data}) {
 
@@ -16,6 +18,28 @@ export default function ProductCard({data}) {
         setRating(rating);
 
     },[])
+
+    let { cartItems, setCartItems } = useContext(ComoonContext);
+
+    const addToCart = (productInfo) => {
+
+        const info = {
+            id : productInfo.id,
+            name : productInfo.name,
+            price : productInfo.price,
+            image : productInfo.image,
+            category_name : productInfo.category_name,
+            description : productInfo.description,
+            quantity : 1
+        }
+
+        const finalData = [info, ...cartItems];
+        setCartItems(finalData);
+        localStorage.setItem('cartItems', JSON.stringify(finalData));
+        toast.success('Add to cart suuccesfully !!')
+
+        console.log(info);
+    }
 
     return (
         <>
@@ -70,7 +94,7 @@ export default function ProductCard({data}) {
                                 }
                                 
                             </div>
-                            <button class="btn btn-sm btn-outline-primary">
+                            <button class="btn btn-sm btn-outline-primary" onClick={ () => addToCart(data) }>
                                 <i class="fa fa-shopping-cart"></i>
                             </button>
                         </div>
