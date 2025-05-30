@@ -1,17 +1,61 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { ComoonContext } from '../ContextAPI/Context';
+import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function ViewCart() {
+
+    let { cartItems, setCartItems } = useContext(ComoonContext);
+
+    const [getCartItems, setGetCartItems] = useState(cartItems);
+
+    const [totalAmount, setTotalAmount] = useState(0)
+
+    useEffect(() => {
+        var sum = 0;
+        cartItems.forEach((v) => {
+            sum += v.price * v.quantity;
+        })
+        setTotalAmount(sum);
+    },[cartItems])
+
+    const updateCart = (id, type) => {
+        if(type == 'minus'){
+            const cartData = cartItems.map((v) => {
+                if(id == v.id){
+                    if(v.quantity > 1){
+                        v.quantity--;
+                        toast.success('Cart update successfully !')
+                        return v;
+                    } else {
+                        toast.error('Minimum 1 qty required !')
+                        return v;
+                    }
+                    
+                } else {
+                    return v;
+                }
+                
+            })
+
+            const finalData = [...cartData];
+            setCartItems(finalData);
+            localStorage.setItem('cartItems', JSON.stringify(finalData));
+        }
+    }
+    
+
     return (
         <>
-            <div className='container-fluid'>
+            <div className='container-fluid p-5'>
                 <div className='container'>
                     <div className='row'>
-                        <div class="col-sm-12 col-md-10 col-md-offset-1">
+                        <div class="col-sm-12 col-md-12">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
                                         <th>Product</th>
-                                        <th>Authorized</th>
+                                        <th>Description</th>
                                         <th>Quantity</th>
                                         <th class="text-center">Price</th>
                                         <th class="text-center">Total</th>
@@ -19,49 +63,52 @@ export default function ViewCart() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td class="col-sm-8 col-md-6">
-                                            <div class="media">
-                                                <a class="thumbnail pull-left" href="#"> <img class="media-object" src="http://icons.iconarchive.com/icons/custom-icon-design/flatastic-2/72/product-icon.png"/> </a>
-                                                <div class="media-body">
-                                                    <h4 class="media-heading"><a href="#">Package</a></h4>
-                                                    <h5 class="media-heading"> by <a href="#">Brand name</a></h5>
-                                                    <span>Status: </span><span class="text-warning"><strong>In Stock</strong></span>
-                                                </div>
-                                            </div></td>
-                                        <td class="col-md-1 text-left"><strong class="label label-danger">None</strong></td>
-                                        <td class="col-sm-1 col-md-1 text-center">
-                                            <input type="email" class="form-control" id="exampleInputEmail1" value="3"/>
-                                        </td>
-                                        <td class="col-sm-1 col-md-1 text-center"><strong>$9.99</strong></td>
-                                        <td class="col-sm-1 col-md-1 text-center"><strong>$99.99</strong></td>
-                                        <td class="col-sm-1 col-md-1">
-                                            <button type="button" class="btn btn-danger">
-                                                <span class="fa fa-remove"></span> Remove
-                                            </button></td>
-                                    </tr>
-                                    <tr>
-                                        <td class="col-md-6">
-                                            <div class="media">
-                                                <a class="thumbnail pull-left " href="#"> <img class="media-object " src="https://adc3ef35f321fe6e725a-fb8aac3b3bf42afe824f73b606f0aa4c.ssl.cf1.rackcdn.com/tenantlogos/28859.png"/> </a>
-                                                <div class="media-body">
-                                                    <h4 class="media-heading"><a href="#">Auto</a></h4>
-                                                    <h5 class="media-heading"> by <a href="#">Hertz</a></h5>
-                                                    <span>Status: </span><span class="text-success"><strong>Lorem ipsum in 2 - 3 weeks</strong></span>
-                                                </div>
-                                            </div></td>
-                                        <td class="col-md-1 text-left"><strong class="label label-success ">Authorized</strong></td>
-                                        <td class="col-md-1 text-center">
-                                            <input type="email" class="form-control" id="exampleInputEmail1" value="2"/>
-                                        </td>
-                                        <td class="col-md-1 text-center"><strong>$9.99</strong></td>
-                                        <td class="col-md-1 text-center"><strong>$9.98</strong></td>
-                                        <td class="col-md-1">
-                                            <button type="button" class="btn btn-danger">
-                                                <span class="fa fa-remove"></span> Remove
-                                            </button></td>
-                                    </tr>
+            {
+                getCartItems.length > 0
+
+                    ?
+
+                    getCartItems.map((cart, index) => {
+                        return (
+                            <tr key={index}>
+                                <td class="col-sm-8 col-md-3">
+                                    <div class="media">
+                                        <a class="thumbnail pull-left" href="#"> <img class="media-object" src={cart.image}  width={150}/> </a>
+                                        <div class="media-body">
+                                            <h4 class="media-heading">
+                                                <Link to={`/product-details/${cart.id}`} className='text-decoration-none text-black'>{cart.name}</Link>
+                                            </h4>
+                                            <h5 class="media-heading"> Category : { cart.category_name}</h5>
+                                            
+                                        </div>
+                                    </div></td>
+                                <td class="col-md-3 text-left"><strong class="label label-danger">{ cart.description ?? 'N/A' }</strong></td>
+                                <td class=" text-center d-flex justify-content-between">
+                                    <button onClick={ () => updateCart(cart.id,'minus') } >-</button>
+
+                                    <div>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" defaultValue={cart.quantity} onChange={ () => updateCart(cart.id,'') } />
+                                    </div>
                                     
+
+                                    <button onClick={ () => updateCart(cart.id,'plus') }>+</button>
+                                </td>
+                                <td class="col-sm-1 col-md-1 text-center"><strong>${cart.price}</strong></td>
+                                <td class="col-sm-1 col-md-1 text-center"><strong>${cart.price * cart.quantity}</strong></td>
+                                <td class="col-sm-1 col-md-1">
+                                    <button type="button" class="btn btn-danger">
+                                        Remove
+                                    </button></td>
+                            </tr>
+                        )
+                    })
+
+                    :
+                    ""
+            }
+
+
+
                                     <tr>
                                         <td>   </td>
                                         <td>   </td>
@@ -81,7 +128,7 @@ export default function ViewCart() {
                                         <td>   </td>
                                         <td>   </td>
                                         <td><h3>Total</h3></td>
-                                        <td class="text-right"><h3><strong>$9.999.99</strong></h3></td>
+                                        <td class="text-right"><h3><strong>${ totalAmount }</strong></h3></td>
                                     </tr>
                                     <tr>
                                         <td>   </td>

@@ -21,7 +21,7 @@ export default function ProductListing() {
         if(params.slug){
             setFilterAllCategories([params.slug]);
         }
-    },[params]);
+    },[params.slug]);
     
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
@@ -97,7 +97,7 @@ export default function ProductListing() {
             .catch(() => {
                 toast.error('Something went wrong!');
             })
-    }, [ currentPage, sorting, filterAllCategories, priceFrom, priceTo, productName]);
+    }, [params.slug, currentPage, sorting, filterAllCategories, priceFrom, priceTo, productName]);
 
 
     useEffect(() => {
