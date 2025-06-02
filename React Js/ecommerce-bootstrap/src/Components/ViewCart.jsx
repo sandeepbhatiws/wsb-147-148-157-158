@@ -7,7 +7,6 @@ export default function ViewCart() {
 
     let { cartItems, setCartItems } = useContext(ComoonContext);
 
-    const [getCartItems, setGetCartItems] = useState(cartItems);
 
     const [totalAmount, setTotalAmount] = useState(0)
 
@@ -41,7 +40,43 @@ export default function ViewCart() {
             const finalData = [...cartData];
             setCartItems(finalData);
             localStorage.setItem('cartItems', JSON.stringify(finalData));
+        } else {
+            const cartData = cartItems.map((v) => {
+                if(id == v.id){
+                    if(v.quantity < 10){
+                        v.quantity++;
+                        toast.success('Cart update successfully !')
+                        return v;
+                    } else {
+                        toast.error('Maximum qty reached !')
+                        return v;
+                    }
+                    
+                } else {
+                    return v;
+                }
+                
+            })
+
+            const finalData = [...cartData];
+            setCartItems(finalData);
+            localStorage.setItem('cartItems', JSON.stringify(finalData));
         }
+    }
+
+    const cartDelete = (productId) => {
+        if(confirm('Are you sure you want to delete ?')){
+            var finalData = cartItems.filter((v) => {
+                if(productId != v.id){
+                    return v;
+                }
+            })
+
+            const cartData = [...finalData];
+            setCartItems(cartData);
+            localStorage.setItem('cartItems', JSON.stringify(cartData));
+        }
+
     }
     
 
@@ -64,11 +99,11 @@ export default function ViewCart() {
                                 </thead>
                                 <tbody>
             {
-                getCartItems.length > 0
+                cartItems.length > 0
 
                     ?
 
-                    getCartItems.map((cart, index) => {
+                    cartItems.map((cart, index) => {
                         return (
                             <tr key={index}>
                                 <td class="col-sm-8 col-md-3">
@@ -86,8 +121,7 @@ export default function ViewCart() {
                                 <td class=" text-center d-flex justify-content-between">
                                     <button onClick={ () => updateCart(cart.id,'minus') } >-</button>
 
-                                    <div>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" defaultValue={cart.quantity} onChange={ () => updateCart(cart.id,'') } />
+                                    <div>{cart.quantity}
                                     </div>
                                     
 
@@ -96,7 +130,7 @@ export default function ViewCart() {
                                 <td class="col-sm-1 col-md-1 text-center"><strong>${cart.price}</strong></td>
                                 <td class="col-sm-1 col-md-1 text-center"><strong>${cart.price * cart.quantity}</strong></td>
                                 <td class="col-sm-1 col-md-1">
-                                    <button type="button" class="btn btn-danger">
+                                    <button type="button" class="btn btn-danger" onClick={ () => cartDelete(cart.id) }>
                                         Remove
                                     </button></td>
                             </tr>
