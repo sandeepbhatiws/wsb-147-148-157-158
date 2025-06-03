@@ -13,7 +13,11 @@ export default function Context({children}) {
     const [cartItems, setCartItems] = useState(cartData ? cartData : []);
     const [wishlistItems, setWishlistItems] = useState(wishlistData ?? []);
 
-    const data = {cartItems, setCartItems, wishlistItems, setWishlistItems}
+    const userLogin = localStorage.getItem('user_uid');
+
+    const [isLogin, setIsLogin] = useState(userLogin);
+
+    const data = {cartItems, setCartItems, wishlistItems, setWishlistItems, isLogin, setIsLogin}
 
   return (
     <>

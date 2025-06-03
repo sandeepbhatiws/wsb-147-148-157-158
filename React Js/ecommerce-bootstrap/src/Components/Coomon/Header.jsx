@@ -9,7 +9,12 @@ export default function Header() {
 
     const [categories, setCategories] = useState([]);
 
-    const { cartItems } = useContext(ComoonContext);
+    const { cartItems, setIsLogin,  isLogin } = useContext(ComoonContext);
+
+    const logout = () => {
+        localStorage.removeItem('user_uid');
+        setIsLogin('');
+    }
 
     useEffect(() => {
         var api = 'https://wscubetech.co/ecommerce-api/categories.php';
@@ -51,9 +56,20 @@ export default function Header() {
                             <div class="d-flex justify-content-end align-items-center">
                                 <Link to="/product-listings" class="btn btn-link text-dark d-none d-md-inline-block">Categories</Link>
                                 <a href="#" class="btn btn-link text-dark d-none d-md-inline-block">Deals</a>
-                                <a href="#" class="btn btn-link text-dark position-relative">
-                                    <i class="fa fa-user"></i>
-                                </a>
+
+                                {
+                                    isLogin 
+                                    ?
+                                    <div onClick={ logout } class="btn btn-link text-dark position-relative">
+                                        Logout
+                                    </div>
+                                    :
+                                    <Link to="/login-register" class="btn btn-link text-dark position-relative">
+                                        <i class="fa fa-user"></i>
+                                    </Link>
+                                }
+
+                                
                                 <Link to="/view-carts" class="btn btn-link text-dark position-relative">
                                     <i class="fa fa-shopping-cart"></i>
                                     <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">

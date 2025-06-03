@@ -13,6 +13,7 @@ import AboutUs from './Components/AboutUs';
 import RootLayout from './Components/RootLayout';
 import ProductDetail from './Components/ProductDetail';
 import ViewCart from './Components/ViewCart';
+import LoginRegister from './Components/LoginRegister';
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
@@ -24,6 +25,8 @@ createRoot(document.getElementById('root')).render(
                 <Route path='/product-listings/:slug?/:sub_slug?' element={<ProductListing/>}/>
                 <Route path='/product-details/:id' element={<ProductDetail/>}/>
                 <Route path='/view-carts' element={<ViewCart/>}/>
+
+                <Route path='/login-register' element={<LoginRegister/>}/>
             </Route>
 
 
