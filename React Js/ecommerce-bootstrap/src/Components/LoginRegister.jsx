@@ -1,18 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup  } from "firebase/auth";
 import app from '../config/firebase';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { ComoonContext } from '../ContextAPI/Context';
+import { getDatabase, ref, set, onValue  } from "firebase/database";
 
 export default function LoginRegister() {
 
     const [registerLoading, setRegisterLoading] = useState('Register');
     const [loginLoading, setLoginLoading] = useState('Login');
+    const [googleLoading, setGoogleLoading] = useState('Login with Google');
 
     const navigate = useNavigate();
 
-    const { isLogin, setIsLogin } = useContext(ComoonContext);
+    const { isLogin, setIsLogin, cartItems, setCartItems } = useContext(ComoonContext);
 
     useEffect(() => {
         if(isLogin){
@@ -66,10 +68,23 @@ export default function LoginRegister() {
                 console.log(user);
                 localStorage.setItem('user_uid', user.uid)
                 setIsLogin(user.uid)
+
+                const db = getDatabase(app);
+                const getUsercart = ref(db, 'user_carts/' + user.uid);
+                onValue(getUsercart, (snapshot) => {
+                    const data = snapshot.val();
+
+                    console.log(data);
+                    setCartItems(data);
+                    localStorage.setItem('cartItems', JSON.stringify(data));
+                });
+
+                
+                set(ref(db, 'user_carts/' + user.uid), cartItems);
                 // ...
                 toast.success('Login Successfully !!')
                 setLoginLoading('Login')
-                navigate('/')
+                // navigate('/')
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -79,6 +94,36 @@ export default function LoginRegister() {
                 toast.error(errorMessage)
             });
     }
+
+    const googleLogin = () => {
+        setGoogleLoading('Loading...');
+        const provider = new GoogleAuthProvider();
+
+        const auth = getAuth(app);
+        signInWithPopup(auth, provider)
+        .then((result) => {
+            const user = result.user;
+
+            localStorage.setItem('user_uid', user.uid)
+            setIsLogin(user.uid)
+            toast.success('Login Successfully !!')
+            setGoogleLoading('Login with Google')
+
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + user.uid), cartItems);
+            navigate('/')
+
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+
+            setGoogleLoading('Login with Google')
+            toast.error(errorMessage)
+        });
+
+    }
+
     return (
         <>
             <div className='container-fluid py-5'>
@@ -99,6 +144,8 @@ export default function LoginRegister() {
                                         <input type="password" name='password' class="form-control" id="exampleInputPassword1" />
                                     </div>
                                     <button type="submit" class="btn btn-primary">{loginLoading}</button>
+
+                                    <button onClick={googleLogin} type="button" class="btn btn-primary ms-3">{googleLoading}</button>
                                 </form>
                             </div>
                         </div>

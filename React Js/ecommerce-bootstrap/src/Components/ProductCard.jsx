@@ -2,6 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import { ComoonContext } from '../ContextAPI/Context';
 import { toast } from 'react-toastify';
+import { getDatabase, ref, set } from "firebase/database";
+import app from '../config/firebase';
 
 export default function ProductCard({ data }) {
 
@@ -19,7 +21,7 @@ export default function ProductCard({ data }) {
 
     }, [])
 
-    let { cartItems, setCartItems } = useContext(ComoonContext);
+    let { cartItems, setCartItems, isLogin } = useContext(ComoonContext);
 
     const addToCart = (productInfo) => {
 
@@ -52,6 +54,9 @@ export default function ProductCard({ data }) {
             setCartItems(finalData);
             localStorage.setItem('cartItems', JSON.stringify(finalData));
 
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + isLogin), finalData);
+
         } else {
             const info = {
                 id: productInfo.id,
@@ -67,6 +72,9 @@ export default function ProductCard({ data }) {
             setCartItems(finalData);
             localStorage.setItem('cartItems', JSON.stringify(finalData));
             toast.success('Add to cart suuccesfully !!')
+
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + isLogin), finalData);
 
             console.log(info);
         }

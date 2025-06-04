@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ComoonContext } from '../ContextAPI/Context';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { getDatabase, ref, set } from "firebase/database";
+import app from '../config/firebase';
 
 export default function ViewCart() {
 
-    let { cartItems, setCartItems } = useContext(ComoonContext);
+    let { cartItems, setCartItems, isLogin } = useContext(ComoonContext);
 
 
     const [totalAmount, setTotalAmount] = useState(0)
@@ -40,6 +42,9 @@ export default function ViewCart() {
             const finalData = [...cartData];
             setCartItems(finalData);
             localStorage.setItem('cartItems', JSON.stringify(finalData));
+
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + isLogin), finalData);
         } else {
             const cartData = cartItems.map((v) => {
                 if(id == v.id){
@@ -61,6 +66,9 @@ export default function ViewCart() {
             const finalData = [...cartData];
             setCartItems(finalData);
             localStorage.setItem('cartItems', JSON.stringify(finalData));
+
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + isLogin), finalData);
         }
     }
 
@@ -75,6 +83,9 @@ export default function ViewCart() {
             const cartData = [...finalData];
             setCartItems(cartData);
             localStorage.setItem('cartItems', JSON.stringify(cartData));
+
+            const db = getDatabase(app);
+            set(ref(db, 'user_carts/' + isLogin), cartData);
         }
 
     }
