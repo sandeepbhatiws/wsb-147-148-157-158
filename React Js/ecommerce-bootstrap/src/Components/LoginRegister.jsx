@@ -75,16 +75,19 @@ export default function LoginRegister() {
                     const data = snapshot.val();
 
                     console.log(data);
-                    setCartItems(data);
-                    localStorage.setItem('cartItems', JSON.stringify(data));
+                    if(data){
+                        localStorage.setItem('cartItems', JSON.stringify(data));
+                    } else {
+                        set(ref(db, 'user_carts/' + user.uid), cartItems);
+                    }
+                    
                 });
 
                 
-                set(ref(db, 'user_carts/' + user.uid), cartItems);
                 // ...
                 toast.success('Login Successfully !!')
                 setLoginLoading('Login')
-                // navigate('/')
+                navigate('/')
             })
             .catch((error) => {
                 const errorCode = error.code;
