@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 export default function ProductCard() {
@@ -7,13 +8,13 @@ export default function ProductCard() {
                     <div class="relative flex">
                         <img
                             class=""
-                            src="./images/product-chair.png"
+                            src="../images/product-chair.png"
                             alt="sofa image"
                         />
                         <div
                             class="absolute flex h-full w-full items-center justify-center gap-3 opacity-0 duration-150 hover:opacity-100"
                         >
-                            <a href="product-overview.html">
+                            <Link href="/product-details/tshirt">
                                 <span
                                     class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-amber-400"
                                 >
@@ -32,7 +33,7 @@ export default function ProductCard() {
                                         />
                                     </svg>
                                 </span>
-                            </a>
+                            </Link>
                             <span
                                 class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-amber-400"
                             >

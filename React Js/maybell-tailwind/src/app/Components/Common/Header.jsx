@@ -86,8 +86,8 @@ export default function Header() {
                     <p class="text-xs">Wishlist</p>
                 </a>
 
-                <a
-                    href="cart.html"
+                <Link
+                    href="/cart"
                     class="flex cursor-pointer flex-col items-center justify-center"
                 >
                     <svg
@@ -104,7 +104,7 @@ export default function Header() {
                     </svg>
 
                     <p class="text-xs">Cart</p>
-                </a>
+                </Link>
 
                 <a
                     href="account-page.html"
@@ -175,8 +175,8 @@ export default function Header() {
                     <p class="text-xs">Wishlist</p>
                 </a>
 
-                <a
-                    href="cart.html"
+                <Link
+                    href="/cart"
                     class="flex cursor-pointer flex-col items-center justify-center"
                 >
                     <svg
@@ -193,7 +193,7 @@ export default function Header() {
                     </svg>
 
                     <p class="text-xs">Cart</p>
-                </a>
+                </Link>
 
                 <a
                     href="account-page.html"
@@ -258,7 +258,7 @@ export default function Header() {
             </form>
             <ul class="text-center font-medium">
                 <li class="py-2"><a href="index.html">Home</a></li>
-                <li class="py-2"><a href="catalog.html">Catalog</a></li>
+                <li class="py-2"><Link href="/products">Products</Link></li>
                 <li class="py-2"><a href="about-us.html">About Us</a></li>
                 <li class="py-2"><a href="contact-us.html">Contact Us</a></li>
             </ul>
@@ -306,11 +306,10 @@ export default function Header() {
                     href="index.html"
                 >Home</a
                 >
-                <a
+                <Link
                     class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
-                    href="catalog.html"
-                >Catalog</a
-                >
+                    href="/products"
+                >Products</Link>
                 <a
                     class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
                     href="about-us.html"
@@ -324,19 +323,17 @@ export default function Header() {
             </div>
 
             <div class="ml-auto flex gap-4 px-5">
-                <a
+                <Link
                     class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
-                    href="login.html"
-                >Login</a
-                >
+                    href="/login"
+                >Login</Link>
 
                 <span class="text-white">&#124;</span>
 
-                <a
+                <Link
                     class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
-                    href="sign-up.html"
-                >Sign Up</a
-                >
+                    href="/sign-up"
+                >Sign Up</Link>
             </div>
         </div>
     </nav >
@@ -365,7 +362,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/bed.svg"
+                            src="../images/bed.svg"
                             alt="Bedroom icon"
                         />
                         Bedroom
@@ -393,7 +390,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/sleep.svg"
+                            src="../images/sleep.svg"
                             alt="bedroom icon"
                         />
                         Matrass
@@ -421,7 +418,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/outdoor.svg"
+                            src="../images/outdoor.svg"
                             alt="bedroom icon"
                         />
                         Outdoor
@@ -449,7 +446,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/sofa.svg"
+                            src="../images/sofa.svg"
                             alt="bedroom icon"
                         />
                         Sofa
@@ -477,7 +474,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/kitchen.svg"
+                            src="../images/kitchen.svg"
                             alt="bedroom icon"
                         />
                         Kitchen
@@ -505,7 +502,7 @@ export default function Header() {
                         <img
                             width="15px"
                             height="15px"
-                            src="./images/food.svg"
+                            src="../images/food.svg"
                             alt="Food icon"
                         />
                         Living room
