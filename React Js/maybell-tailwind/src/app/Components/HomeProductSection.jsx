@@ -13,9 +13,9 @@ export default function HomeProductSection({title, productData}) {
                 {/* <!-- 1 --> */}
 
                 {
-                    productData.map(() => {
+                    productData.map((v,i) => {
                         return(
-                            <ProductCard/>
+                            <ProductCard key={i} product={v}/>
                         )
                     })
                 }

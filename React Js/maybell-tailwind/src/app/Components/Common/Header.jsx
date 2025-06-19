@@ -1,13 +1,12 @@
 import Link from 'next/link'
 import React from 'react'
 import { useSelector } from 'react-redux'
+import { ToastContainer } from 'react-toastify'
 
 export default function Header() {
 
 
     const isLogin = useSelector((v) => {
-
-        console.log(v.login.isLogin);
         return v.login.isLogin
     })
 
@@ -16,6 +15,8 @@ export default function Header() {
     return (
         <>
             {/* <!-- Header --> */}
+
+            <ToastContainer/>
             <header
                 class="mx-auto flex h-16 max-w-[1200px] items-center justify-between px-5"
             >

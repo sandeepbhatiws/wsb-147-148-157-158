@@ -1,9 +1,18 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux';
 
 export default function CartPage() {
-
-    const [cartItems, setCartItems] = useState([1, 2, 3, 4, 5]);
+    
+    const [cartItems, setCartItems] = useState([]);
+    
+    var cartData = useSelector((data) => {
+        return data.cart.cartItems;
+    }) 
+    
+    useEffect(() => {
+        setCartItems(cartData);
+    },[cartData]);
 
     return (
         <>
@@ -99,16 +108,16 @@ export default function CartPage() {
                                                 <div class="flex">
                                                     <img
                                                         class="w-[90px]"
-                                                        src="./images/bedroom.png"
+                                                        src={v.image}
                                                         alt="bedroom image"
                                                     />
                                                     <div class="ml-3 flex flex-col justify-center">
-                                                        <p class="text-xl font-bold">ITALIAN BED</p>
-                                                        <p class="text-sm text-gray-400">Size: XL</p>
+                                                        <p class="text-xl font-bold">{v.name}</p>
+                                                        {/* <p class="text-sm text-gray-400">Size: XL</p> */}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="mx-auto text-center">&#36;320</td>
+                                            <td class="mx-auto text-center">&#36;{v.price}</td>
                                             <td class="align-middle">
                                                 <div class="flex items-center justify-center">
                                                     <button
@@ -119,7 +128,7 @@ export default function CartPage() {
                                                     <div
                                                         class="flex h-8 w-8 cursor-text items-center justify-center border-t border-b active:ring-gray-500"
                                                     >
-                                                        1
+                                                        { v.quantity }
                                                     </div>
                                                     <button
                                                         class="flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500"
@@ -128,7 +137,7 @@ export default function CartPage() {
                                                     </button>
                                                 </div>
                                             </td>
-                                            <td class="mx-auto text-center">&#36;320</td>
+                                            <td class="mx-auto text-center">&#36;{v.price * v.quantity}</td>
                                             <td class="align-middle">
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
