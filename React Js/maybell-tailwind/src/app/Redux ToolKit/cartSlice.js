@@ -33,11 +33,76 @@ export const cartSlice = createSlice({
         localStorage.setItem('cartItems', JSON.stringify(newData));
         toast.success('Add to Cart succussfully')
       } else {
+        var newData = state.cartItems.map((v) => {
+          if (v.id == action.payload.id) {
+
+            if(v.quantity < 5){
+              v.quantity++;
+              toast.success('Update Cart succussfully')
+              return v;
+            } else {
+              toast.error('Maximum quantity reached!')
+              return v;
+            }
+            
+          } else {
+            return v;
+          }
+        })
+
+        console.log(newData);
+
+        var newData = [...newData];
+        state.cartItems = newData;
+        localStorage.setItem('cartItems', JSON.stringify(newData));
+        
 
       } 
     },
     updateCart: (state, action) => {
-      state.value += action.payload
+        if(action.payload.type == 'minus'){
+          var newData = state.cartItems.map((v) => {
+            if (v.id == action.payload.id) {
+
+              if(v.quantity > 1){
+                v.quantity--;
+                toast.success('Update Cart succussfully')
+                return v;
+              } else {
+                toast.error('Minimum quantity reached!')
+                return v;
+              }
+              
+            } else {
+              return v;
+            }
+          })
+
+          var newData = [...newData];
+          state.cartItems = newData;
+          localStorage.setItem('cartItems', JSON.stringify(newData));
+        } else {
+          var newData = state.cartItems.map((v) => {
+            if (v.id == action.payload.id) {
+
+              if(v.quantity < 5){
+                v.quantity++;
+                toast.success('Update Cart succussfully')
+                return v;
+              } else {
+                toast.error('Maximum quantity reached!')
+                return v;
+              }
+              
+            } else {
+              return v;
+            }
+          })
+
+          var newData = [...newData];
+          state.cartItems = newData;
+          localStorage.setItem('cartItems', JSON.stringify(newData));
+        }
     },
     deleteCart: (state, action) => {
       state.value += action.payload

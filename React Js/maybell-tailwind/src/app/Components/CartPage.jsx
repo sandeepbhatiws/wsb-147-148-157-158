@@ -1,6 +1,7 @@
 "use client"
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateCart } from '../Redux ToolKit/cartSlice';
 
 export default function CartPage() {
     
@@ -9,6 +10,8 @@ export default function CartPage() {
     var cartData = useSelector((data) => {
         return data.cart.cartItems;
     }) 
+
+    var dispatch = useDispatch();
     
     useEffect(() => {
         setCartItems(cartData);
@@ -120,7 +123,7 @@ export default function CartPage() {
                                             <td class="mx-auto text-center">&#36;{v.price}</td>
                                             <td class="align-middle">
                                                 <div class="flex items-center justify-center">
-                                                    <button
+                                                    <button onClick={ () => dispatch(updateCart({ id : v.id, type : 'minus'})) }
                                                         class="flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500"
                                                     >
                                                         &minus;
@@ -130,7 +133,7 @@ export default function CartPage() {
                                                     >
                                                         { v.quantity }
                                                     </div>
-                                                    <button
+                                                    <button onClick={ () => dispatch(updateCart({ id : v.id, type : 'plus'})) }
                                                         class="flex h-8 w-8 cursor-pointer items-center justify-center border duration-100 hover:bg-neutral-100 focus:ring-2 focus:ring-gray-500 active:ring-2 active:ring-gray-500"
                                                     >
                                                         &#43;

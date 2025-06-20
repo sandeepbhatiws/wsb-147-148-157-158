@@ -1,6 +1,23 @@
-import React from 'react'
+"use client"
+
+import { useRouter } from 'next/navigation'
+import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 export default function Login() {
+
+    const isLogin = useSelector((v) => {
+        return v.login.isLogin
+    })
+
+    // const router = useRouter();
+
+    // useEffect(() => {
+    //     if(isLogin){
+    //         router.push('/');
+    //     }
+    // },[isLogin])
+
     return (
         <>
             {/* <!-- Login card  --> */}

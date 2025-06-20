@@ -10,8 +10,6 @@ export default function Header() {
         return v.login.isLogin
     })
 
-    console.log(isLogin);
-
     return (
         <>
             {/* <!-- Header --> */}
@@ -341,20 +339,27 @@ export default function Header() {
                         >Contact Us</a
                         >
                     </div>
+                    
+                    {
+                        isLogin
+                        ?
+                        ''
+                        :
+                        <div class="ml-auto flex gap-4 px-5">
+                            <Link
+                                class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
+                                href="/login"
+                            >Login</Link>
 
-                    <div class="ml-auto flex gap-4 px-5">
-                        <Link
-                            class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
-                            href="/login"
-                        >Login</Link>
+                            <span class="text-white">&#124;</span>
 
-                        <span class="text-white">&#124;</span>
-
-                        <Link
-                            class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
-                            href="/sign-up"
-                        >Sign Up</Link>
-                    </div>
+                            <Link
+                                class="font-light text-white duration-100 hover:text-yellow-400 hover:underline"
+                                href="/sign-up"
+                            >Sign Up</Link>
+                        </div>
+                    }
+                    
                 </div>
             </nav >
             {/* < !-- /Nav bar -->
