@@ -1,42 +1,54 @@
-const http = require('http');
-const { categories, products } = require('./data');
+const express = require('express');
+const { categories } = require('./data');
+const server = express(); // To make Exucatable Function
 
-// http.createServer((request, response) => {
-//     response.end('Server is working fine !');
-// }).listen(5000, () => {
-//     console.log('Server is working fine !');
-// });
-
-var server = http.createServer((request, response) => {
-
-    if(request.url == '/'){
-        response.end('<h1>Server is working fine !</h1>');
-    } else if(request.url == '/api/view-categories' && request.method == 'POST'){
-        
-        if(categories.length > 0){
-            const output = {
-                _status : true, // true or false
-                _message : "Message Goes Here",
-                _data : categories
-            }
-
-            response.end(JSON.stringify(output));
-        } else {
-            const output = {
-                _status : false, // true or false
-                _message : "No Record Found",
-                _data : categories
-            }
-
-            response.end(JSON.stringify(output));
-        }
-        
-    }
-
-
-    
+server.get('/', (request, response) => {
+    response.send('Server is working Fine !');
 });
 
+server.put('/api/view-categories', (request, response) => {
+
+    if(categories.length > 0){
+        const output = {
+            _status : true,
+            _message : 'Record found suuccussfully !',
+            _data : categories
+        }
+
+        response.send(output);
+    } else {
+        const output = {
+            _status : false,
+            _message : 'No Record found !',
+            _data : categories
+        }
+
+        response.send(output);
+    }
+});
+
+server.get('/api/view-products', (request, response) => {
+
+    if(categories.length > 0){
+        const output = {
+            _status : true,
+            _message : 'Record found suuccussfully !',
+            _data : categories
+        }
+
+        response.send(output);
+    } else {
+        const output = {
+            _status : false,
+            _message : 'No Record found !',
+            _data : categories
+        }
+
+        response.send(output);
+    }
+});
+
+
 server.listen(5000, () => {
-    console.log('Server is working fine !');
+    console.log('Server is working Fine !');
 });
