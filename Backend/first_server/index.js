@@ -1,12 +1,17 @@
 const express = require('express');
 const { categories } = require('./data');
+const validation = require('./middleware');
 const server = express(); // To make Exucatable Function
+var key = 123456789;
+
+const route = express.Router();
+route.use(validation);
 
 server.get('/', (request, response) => {
     response.send('Server is working Fine !');
 });
 
-server.put('/api/view-categories', (request, response) => {
+server.get('/api/view-categories', (request, response) => {
 
     if(categories.length > 0){
         const output = {
@@ -27,7 +32,7 @@ server.put('/api/view-categories', (request, response) => {
     }
 });
 
-server.get('/api/view-products', (request, response) => {
+route.get('/api/view-products', (request, response) => {
 
     if(categories.length > 0){
         const output = {
@@ -48,6 +53,7 @@ server.get('/api/view-products', (request, response) => {
     }
 });
 
+server.use('/',route);
 
 server.listen(5000, () => {
     console.log('Server is working Fine !');
