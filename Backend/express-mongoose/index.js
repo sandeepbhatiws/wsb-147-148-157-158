@@ -19,6 +19,11 @@ server.get('/', (request, response) => {
     response.send('Server is working fine !');
 });
 
+// Admin API URls
+require('./src/routes/admin/color.routes.js')(server);
+
+//Website API URLS
+
 
 server.listen(8001, () => {
     mongoose.connect('mongodb://127.0.0.1:27017/wsb_offilne')
