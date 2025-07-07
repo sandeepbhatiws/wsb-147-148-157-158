@@ -3,12 +3,12 @@ const color = require('../../models/color.js');
 
 exports.create = async(request, response) => {
    
-    var data = {
-        name : request.body.color_name,
-        code : request.body.color_code
-    }
+    // var data = {
+    //     name : request.body.color_name,
+    //     code : request.body.color_code
+    // }
 
-    var data = new color(data);
+    var data = new color(request.body);
     await data.save()
     .then((result) => {
         const output = {
@@ -20,10 +20,17 @@ exports.create = async(request, response) => {
         response.send(output);
     })
     .catch((error) => {
+
+        var errorMessages = [];
+
+        for (index in error.errors){
+            errorMessages.push(error.errors[index].message);
+        }
+
         const output = {
             _status : false,
             _message : 'Something Went Wrong !!',
-            _data : error
+            _data : errorMessages
         }
 
         response.send(output);
