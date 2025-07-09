@@ -39,13 +39,42 @@ exports.view = async(request, response) => {
         deleted_at : null
     }
 
-    await color.find(condition)
+    if(request.body.name){
+        condition.name = request.body.name;
+    }
+
+    console.log(condition);
+
+    var limit = request.body.limit ? request.body.limit : 5;
+    var page = request.body.page ? request.body.page : 1;
+    var skip = (page - 1) * limit;
+
+    // console.log(request.body.limit);
+
+    // if(request.body.limit != '' && request.body.limit != undefined){
+    //     limit = request.body.limit;
+    // }
+
+    var totalRecords = await color.find(condition).countDocuments();
+
+    await color.find(condition).sort({
+        order : 'asc'
+    })
+    .sort({
+        _id : 'desc'
+    })
+    .limit(limit).skip(skip)
     .then((result) => {
 
         if(result.length > 0){
             const output = {
                 _status : true,
                 _message : 'Record Fetch !!',
+                _paggination : {
+                    total_records : totalRecords,
+                    current_page : page,
+                    total_pages : Math.ceil(totalRecords / limit)
+                },
                 _data : result
             }
 
