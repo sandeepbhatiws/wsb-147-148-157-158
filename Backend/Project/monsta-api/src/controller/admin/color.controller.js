@@ -35,29 +35,48 @@ exports.create = async(request, response) => {
 
 exports.view = async(request, response) => {
     
-    var condition = {
-        deleted_at : null
+    var limit = 5;
+    var page = 1;
+    var skip = 0;
+
+    if(request.body != undefined){
+        var limit = request.body.limit ? request.body.limit : limit;
+        var page = request.body.page ? request.body.page : page;
+        var skip = (page - 1) * limit;
     }
 
-    if(request.body.name){
-        condition.name = request.body.name;
+    const addCondition = [
+        {
+            deleted_at : null, 
+        }
+    ];
+
+    const orCondition = [];
+
+    if(request.body != undefined){
+        if(request.body.name != undefined){
+            if(request.body.name != ''){
+                var name = new RegExp(request.body.name, 'i');
+                orCondition.push({ name : name },{ code :name })
+            }
+        }
     }
 
-    console.log(condition);
+    if(addCondition.length > 0){
+        var filter = { $and : addCondition }
+    } else {
+        var filter = {}
+    }
 
-    var limit = request.body.limit ? request.body.limit : 5;
-    var page = request.body.page ? request.body.page : 1;
-    var skip = (page - 1) * limit;
+    if(orCondition.length > 0){
+        filter.$or = orCondition;
+    }
 
-    // console.log(request.body.limit);
+    var totalRecords = await color.find(filter).countDocuments();
 
-    // if(request.body.limit != '' && request.body.limit != undefined){
-    //     limit = request.body.limit;
-    // }
-
-    var totalRecords = await color.find(condition).countDocuments();
-
-    await color.find(condition).sort({
+    await color.find(filter)
+    .select('_id name order status code')
+    .sort({
         order : 'asc'
     })
     .sort({
