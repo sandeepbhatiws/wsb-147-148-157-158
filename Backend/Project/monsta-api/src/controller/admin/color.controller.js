@@ -48,6 +48,7 @@ exports.view = async(request, response) => {
     const addCondition = [
         {
             deleted_at : null, 
+            // status : true
         }
     ];
 
@@ -58,6 +59,15 @@ exports.view = async(request, response) => {
             if(request.body.name != ''){
                 var name = new RegExp(request.body.name, 'i');
                 orCondition.push({ name : name },{ code :name })
+            }
+        }
+    }
+
+    if(request.body != undefined){
+        if(request.code.name != undefined){
+            if(request.body.code != ''){
+                var code = new RegExp(request.body.code, 'i');
+                orCondition.push({ code : code })
             }
         }
     }
