@@ -35,7 +35,7 @@ exports.create = async(request, response) => {
 
 exports.view = async(request, response) => {
     
-    var limit = 5;
+    var limit = 15;
     var page = 1;
     var skip = 0;
 
@@ -64,7 +64,7 @@ exports.view = async(request, response) => {
     }
 
     if(request.body != undefined){
-        if(request.code.name != undefined){
+        if(request.body.code != undefined){
             if(request.body.code != ''){
                 var code = new RegExp(request.body.code, 'i');
                 orCondition.push({ code : code })
