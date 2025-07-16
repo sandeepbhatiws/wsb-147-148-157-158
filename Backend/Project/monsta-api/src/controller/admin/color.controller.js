@@ -205,7 +205,40 @@ exports.update = async(request, response) => {
 }
 
 exports.changeStatus = async(request, response) => {
-   
+   await color.updateMany({
+        _id : request.body.id
+    }, [{
+        $set : {
+            status : {
+                $not : "$status"
+            }
+        }
+    }])
+    .then((result) => {
+        const output = {
+            _status : true,
+            _message : 'Change Status successfully !!',
+            _data : result
+        }
+
+        response.send(output);
+    })
+    .catch((error) => {
+
+        var errorMessages = [];
+
+        for (index in error.errors){
+            errorMessages.push(error.errors[index].message);
+        }
+
+        const output = {
+            _status : false,
+            _message : 'Something Went Wrong !!',
+            _data : errorMessages
+        }
+
+        response.send(output);
+    });
 }
 
 exports.destroy = async(request, response) => {
