@@ -21,6 +21,7 @@ server.get('/', (request, response) => {
 
 // Admin API URls
 require('./src/routes/admin/color.routes.js')(server);
+require('./src/routes/admin/categories.routes.js')(server);
 
 //Website API URLS
 
