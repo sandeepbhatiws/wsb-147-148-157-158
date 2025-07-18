@@ -2,21 +2,41 @@ const express = require('express');
 const { create, view, details, update, changeStatus, destroy } = require('../../controller/admin/category.controller');
 const router = express.Router();
 const multer  = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const uploads = multer({ dest: 'uploads/categories' })
+const path  = require('path')
 
 module.exports = server => {
 
-    router.post('/create',upload.none(), create);
+    const storage = multer.diskStorage({
+        destination: function (req, file, cb) {
+            cb(null, 'uploads/categories')
+        },
+        filename: function (req, file, cb) {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
 
-    router.post('/view',view);
+            var extension = path.extname(file.originalname)
+            cb(null, file.fieldname + '-' + uniqueSuffix + extension)
+        }
+    })
 
-    router.post('/details/:id',details);
+    const upload = multer({ storage: storage })
 
-    router.put('/update/:id',update);
 
-    router.put('/change-status',changeStatus);
+    var singleImage = upload.single('image');
+    var multipleImages = upload.array('images', 6);
+    const uploadMiddleware = upload.fields([{ name: 'image', maxCount: 1 }, { name: 'images', maxCount: 8 }])
 
-    router.put('/delete',destroy);
+    router.post('/create',singleImage, create);
+
+    router.post('/view',upload.none(),view);
+
+    router.post('/details/:id',upload.none(),details);
+
+    router.put('/update/:id',upload.none(),update);
+
+    router.put('/change-status',upload.none(),changeStatus);
+
+    router.put('/delete',upload.none(),destroy);
 
     server.use('/api/admin/categories', router);
 }

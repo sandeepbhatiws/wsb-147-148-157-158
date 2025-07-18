@@ -2,7 +2,16 @@ const category = require('../../models/category.js');
 
 exports.create = async(request, response) => {
 
-    var data = new category(request.body);
+    // console.log(request.file);
+    // console.log(request.files);
+
+    var saveData = request.body;
+ 
+    if(request.file){
+        saveData.image = request.file.filename
+    }
+
+    var data = new category(saveData);
     await data.save()
     .then((result) => {
         const output = {
