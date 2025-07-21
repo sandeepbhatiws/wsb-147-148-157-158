@@ -1,4 +1,5 @@
 const category = require('../../models/category.js');
+require('dotenv').config()
 
 exports.create = async(request, response) => {
 
@@ -103,6 +104,7 @@ exports.view = async(request, response) => {
                     current_page : page,
                     total_pages : Math.ceil(totalRecords / limit)
                 },
+                _image_path : process.env.category_image_url,
                 _data : result
             }
 

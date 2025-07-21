@@ -2,6 +2,7 @@ const express =  require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+require('dotenv').config()
 
 // Executable Function
 const server = express();
@@ -19,6 +20,9 @@ server.get('/', (request, response) => {
     response.send('Server is working fine !');
 });
 
+server.use('/uploads/categories', express.static('uploads/categories'));
+
+
 // Admin API URls
 require('./src/routes/admin/color.routes.js')(server);
 require('./src/routes/admin/categories.routes.js')(server);
@@ -26,8 +30,8 @@ require('./src/routes/admin/categories.routes.js')(server);
 //Website API URLS
 
 
-server.listen(8001, () => {
-    mongoose.connect('mongodb://127.0.0.1:27017/wsb_offilne_monsta')
+server.listen(process.env.PORT, () => {
+    mongoose.connect(process.env.DB_URL)
     .then(() => console.log('Connected!'))
     .catch((error) => {
         console.log(error);
