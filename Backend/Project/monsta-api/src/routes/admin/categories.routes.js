@@ -32,7 +32,7 @@ module.exports = server => {
 
     router.post('/details/:id',upload.none(),details);
 
-    router.put('/update/:id',upload.none(),update);
+    router.put('/update/:id',singleImage,update);
 
     router.put('/change-status',upload.none(),changeStatus);
 

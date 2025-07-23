@@ -139,6 +139,7 @@ exports.details = async(request, response) => {
             const output = {
                 _status : true,
                 _message : 'Record Fetch !!',
+                _image_path : process.env.category_image_url,
                 _data : result
             }
 
@@ -166,10 +167,16 @@ exports.details = async(request, response) => {
 
 exports.update = async(request, response) => {
 
+    var saveData = request.body;
+ 
+    if(request.file){
+        saveData.image = request.file.filename
+    }
+
     await category.updateOne({
         _id : request.params.id
     }, {
-        $set : request.body
+        $set : saveData
     })
     .then((result) => {
         const output = {
