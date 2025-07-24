@@ -1,18 +1,14 @@
-const category = require('../../models/category.js');
+const subCategory = require('../../models/subCategory.js');
 require('dotenv').config()
 
 exports.create = async(request, response) => {
-
-    // console.log(request.file);
-    // console.log(request.files);
-
     var saveData = request.body;
  
     if(request.file){
         saveData.image = request.file.filename
     }
 
-    var data = new category(saveData);
+    var data = new subCategory(saveData);
     await data.save()
     .then((result) => {
         const output = {
@@ -39,8 +35,6 @@ exports.create = async(request, response) => {
 
         response.send(output);
     });
-
-
 }
 
 exports.view = async(request, response) => {
@@ -61,15 +55,6 @@ exports.view = async(request, response) => {
         }
     ];
 
-    if(request.body.status == true){
-        // console.log(request.body.status);
-        addCondition.push({ status : true });
-    }
-
-    if(request.body.status == false){
-        addCondition.push({ status : false });
-    }
-
     const orCondition = [];
 
     if(request.body != undefined){
@@ -77,6 +62,12 @@ exports.view = async(request, response) => {
             if(request.body.name != ''){
                 var name = new RegExp(request.body.name, 'i');
                 orCondition.push({ name : name })
+            }
+        }
+
+        if(request.body.parent_category_id != undefined){
+            if(request.body.parent_category_id != ''){
+                addCondition.push({ parent_category_id : request.body.parent_category_id })
             }
         }
     }
@@ -91,10 +82,10 @@ exports.view = async(request, response) => {
         filter.$or = orCondition;
     }
 
-    var totalRecords = await category.find(filter).countDocuments();
+    var totalRecords = await subCategory.find(filter).countDocuments();
 
-    await category.find(filter)
-    .select('_id name image order status')
+    await subCategory.find(filter)
+    .select('_id name parent_category_id image order status')
     .sort({
         order : 'asc'
     })
@@ -142,7 +133,7 @@ exports.view = async(request, response) => {
 
 exports.details = async(request, response) => {
 
-    await category.findById(request.params.id)
+    await subCategory.findById(request.params.id)
     .then((result) => {
         if(result){
             const output = {
@@ -159,7 +150,6 @@ exports.details = async(request, response) => {
                 _message : 'No Record Found !!',
                 _data : result
             }
-
             response.send(output);
         }
     })
@@ -182,7 +172,7 @@ exports.update = async(request, response) => {
         saveData.image = request.file.filename
     }
 
-    await category.updateOne({
+    await subCategory.updateOne({
         _id : request.params.id
     }, {
         $set : saveData
@@ -215,7 +205,7 @@ exports.update = async(request, response) => {
 }
 
 exports.changeStatus = async(request, response) => {
-   await category.updateMany({
+   await subCategory.updateMany({
         _id : request.body.id
     }, [{
         $set : {
@@ -252,7 +242,7 @@ exports.changeStatus = async(request, response) => {
 }
 
 exports.destroy = async(request, response) => {
-    await category.updateMany({
+    await subCategory.updateMany({
         _id : request.body.id
     }, {
         $set : {

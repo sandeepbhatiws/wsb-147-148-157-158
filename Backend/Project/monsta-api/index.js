@@ -26,6 +26,7 @@ server.use('/uploads/categories', express.static('uploads/categories'));
 // Admin API URls
 require('./src/routes/admin/color.routes.js')(server);
 require('./src/routes/admin/categories.routes.js')(server);
+require('./src/routes/admin/subCategories.routes.js')(server);
 
 //Website API URLS
 
