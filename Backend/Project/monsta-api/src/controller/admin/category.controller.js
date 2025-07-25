@@ -62,7 +62,6 @@ exports.view = async(request, response) => {
     ];
 
     if(request.body.status == true){
-        // console.log(request.body.status);
         addCondition.push({ status : true });
     }
 
