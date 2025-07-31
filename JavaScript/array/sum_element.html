@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Sum of Elements</title>
+</head>
+<body>
+
+    
+
+    <script>
+        var numbers = [7,3,15,12,18,25];
+        sum = 0;
+
+        // for(var i = 0; i < numbers.length; i++){
+        //     console.log(numbers[i]);
+        //     sum = sum + numbers[i];
+        // }
+
+        // for(var data in numbers){
+        //     console.log(data);
+        //     sum = sum + numbers[data];
+        // }
+
+        // for(var data of numbers){
+        //     console.log(data);
+        //     sum = sum + data;
+        // }
+
+
+        var numbers = [7,3,15,12,18,25];
+        var length = numbers.length;
+
+        // for(var i = 0; i < length; i++){
+        //     console.log(i);
+        //     numbers.pop();
+        // }
+
+        for(var data of numbers){
+            console.log(data);
+            numbers.pop();
+        }
+
+        console.log(numbers);
+
+
+
+        // console.log('Sum - '+ sum);
+
+
+    </script>
+</body>
+</html>

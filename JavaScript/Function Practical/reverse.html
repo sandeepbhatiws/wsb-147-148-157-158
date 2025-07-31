@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Reverse Array</title>
+</head>
+<body>
+    <button onclick="firstMethod()" >Reverse Number (First Method) </button>
+    <button onclick="secondMethod()">Reverse Number (Second Method) </button>
+    <button onclick="thirdMethod()">Reverse Number (Third Method) </button>
+
+
+
+    <script>
+         var numbers = [10, 15,25,45,50,65,75,100];
+         
+
+         function firstMethod(){
+            var output = [];
+            console.log(numbers);
+
+            for(var i = 0; i < numbers.length; i++){
+                output.unshift(numbers[i]);
+            }
+
+            console.log(output);
+         }
+        
+        
+
+        function secondMethod(){
+            output = [];
+            
+            console.log(numbers);
+
+            for(i = (numbers.length - 1); i >= 0; i-- ){
+                output.push(numbers[i]);
+            }
+
+            console.log(output);
+        }
+         
+
+        function thirdMethod(){
+            var output = numbers.reverse();
+            console.log(output);
+        }
+         
+
+    </script>
+</body>
+</html>

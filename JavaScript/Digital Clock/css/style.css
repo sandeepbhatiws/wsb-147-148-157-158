@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.row{
+    width: 1000px;
+    margin: auto;
+}
+
+.date{
+    padding: 25px;
+    text-align: center;
+}
+.clock{
+    display: flex;
+    width: 1000px;
+    margin: auto;
+    justify-content: center;
+    gap: 15px;
+}
+.clock_data{
+    background-color: black;
+    color: white;
+    font-size: 20px;
+    padding: 15px;
+    border-radius: 10px;
+}

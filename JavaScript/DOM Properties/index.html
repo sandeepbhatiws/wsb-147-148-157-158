@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>DOM Properties</title>
+
+    <style>
+        .row{
+            margin-top: 50px;
+            border-radius: 20px;
+            border: 1px solid black;
+            padding: 15px;
+        }
+        .row1{
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    
+    <button onclick="addCssProperties()">Add Css Properties</button>
+    <button onclick="addClassName()">Add Class Name</button>
+    <button onclick="removeClassName()">Remove Class Name</button>
+    <button onclick="toggleClassName()">Toggle Class Name</button>
+
+
+    <div class="row" id="text">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim itaque culpa, iste dignissimos, recusandae, quod accusantium iusto unde excepturi nisi aliquid ad exercitationem ipsa fuga doloribus libero hic alias sequi.
+    </div>
+
+
+    <script>
+
+
+        function addCssProperties() {
+            var a = document.getElementById('text');
+
+            // a.style.backgroundColor = 'black';
+            // a.style.color = 'white';
+            // a.style.fontSize = '20px';
+
+            a.style.display = 'none';
+        }
+        
+        function addClassName(){
+            document.getElementById('text').classList.add('row1');
+        }
+
+        function removeClassName(){
+            document.getElementById('text').classList.remove('row1');
+        }
+
+        function toggleClassName(){
+            document.getElementById('text').classList.toggle('row1');
+        }
+    </script>
+</body>
+</html>

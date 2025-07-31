@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Lower Number</title>
+</head>
+<body>
+
+    <script>
+        const indianNames = [ "Arjun", "Vinita", "Ravi", "Nisha", "Ishan", "Priya", "Veer", "Siddharth", "Anika", "Karan", "Ayesha", "Rahul", "Uma", "Vikram", "Neha", "Deepak", "Kavita", "Aditya", "Divya", "Rohan"];
+
+        var vowels = ['a', 'e', 'i', 'o', 'u'];
+
+        for(var name of indianNames){
+            var firstLetter = name[0].toLowerCase();
+
+            // if(vowels.includes(firstLetter)){
+            //     if(name.length > 5){
+            //         console.log(name);
+            //     }
+            // }
+
+            if(vowels.includes(firstLetter) && name.length > 5){
+                console.log(name);
+            }
+        }
+
+    </script>
+</body>
+</html>

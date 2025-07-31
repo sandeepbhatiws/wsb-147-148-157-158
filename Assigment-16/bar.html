@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Animate Tap</title>
+	<style type="text/css">
+		body{
+			background: #070721;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		@keyframes changeHeight{
+			0%{
+				transform: scaleY(1);
+			}
+			50%{
+				transform: scaleY(1.5);
+			}
+			100%{
+				transform: scaleY(1);
+			}
+		}
+		.main{
+			display: flex;
+			gap: 50px;
+		}
+		.main .p1{
+			width: 12px;
+			height: 180px;
+			background: blue;
+			animation: changeHeight 3s 0s infinite linear;
+		}
+		.main .p1:nth-child(1){
+			background: orange;
+			animation-duration: 2s;
+		}
+		.main .p1:nth-child(2){
+			background: lightblue;
+			animation-duration: 2.5s;
+		}
+		.main .p1:nth-child(3){
+			background: yellow;
+			animation-duration: 3s;
+		}
+		.main .p1:nth-child(4){
+			background: green;
+			animation-duration: 3.5s;
+		}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<div class="p1"></div>
+		<div class="p1"></div>
+		<div class="p1"></div>
+		<div class="p1"></div>
+	</div>
+</body>
+</html>

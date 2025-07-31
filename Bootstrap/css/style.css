@@ -1,0 +1,14 @@
+
+.outer{
+	width: 100%;
+	background: black;
+}
+.header{
+	background: red;
+	max-width: 1320px;
+	margin: auto;
+	color: white;
+	text-align: center;
+	font-weight: bold;
+	padding: 16px;
+}

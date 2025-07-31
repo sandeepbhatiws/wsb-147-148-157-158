@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <title>Window Object Functions</title>
+    </head>
+    <body>
+        <button id="startTimeOut">Start Time Out</button>
+        <button id="stopTimeOut">Stop Time Out</button>
+        <button id="startTimeInterval">Start Time Interval</button>
+        <button id="stopTimeInterval">Stop Interval</button>
+        <button id="resetTime">Reset</button>
+        
+
+        <script>
+            var i = '';
+            var counter = 0;
+
+            document.getElementById('startTimeOut').addEventListener('click',() => {
+                i = setTimeout(() => {
+                    console.log(counter);
+                },3000);
+            })
+
+            document.getElementById('stopTimeOut').addEventListener('click', () => {
+                clearTimeout(i);
+            })
+
+            document.getElementById('startTimeInterval').addEventListener('click',() => {
+                i = setInterval(() => {
+                    counter++;
+                    console.log(counter);
+                },1000);
+            })
+
+            document.getElementById('stopTimeInterval').addEventListener('click', () => {
+                clearInterval(i);
+            })
+
+            document.getElementById('resetTime').addEventListener('click', () => {
+                // clearInterval(i);
+                counter = 0;
+            })
+
+
+
+
+            // function getValue(){
+            //     console.log('Hello World');
+            // }
+
+            // setTimeout(getValue, 5000);
+
+            // setTimeout(() => {
+            //     console.log('Ws Cube Tech');
+            // }, 3000);
+
+            // setInterval(getValue, 2000);
+
+
+            // setInterval(() => {
+            //     console.log('Ws Cube Tech');
+            // }, 1000)
+
+
+
+
+            // getValue();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Grade Calculation</title>
+    </head>
+    
+    <body>
+
+        <script>
+
+            var english = Number(prompt('Enter the marks of english'));
+            var hindi = Number(prompt('Enter the marks of hindi'));
+            var maths = Number(prompt('Enter the marks of maths'));
+
+            var totalMarks = english + hindi + maths;
+            var percentage = ((english + hindi + maths) /300) * 100;
+
+
+            document.write('<h2> Total Marks - '+ totalMarks +'</h2>');
+            document.write('<h2> Percentage - '+ percentage +'</h2>');
+
+            if(english == '' || hindi == '' || maths == ''){
+                document.write('<h2>Invalid Marks Value</h2>');
+            } else if(english > 100 || hindi > 100 || maths > 100){
+                document.write('<h2>Invalid Marks Value</h2>');
+            } else if(percentage >= 90 && percentage <= 100){
+                document.write('<h2>Grade - A</h2>');
+            } else if(percentage >= 80 && percentage < 90){
+                document.write('<h2>Grade - B</h2>');
+            }
+
+            
+            
+
+        </script>
+    </body>
+</html>
