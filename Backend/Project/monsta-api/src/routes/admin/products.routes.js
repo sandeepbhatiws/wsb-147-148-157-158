@@ -1,5 +1,5 @@
 const express = require('express');
-const { create, view, details, update, changeStatus, destroy } = require('../../controller/admin/product.controller');
+const { create, view, details, update, changeStatus, destroy, productDetails } = require('../../controller/admin/product.controller');
 const router = express.Router();
 const multer  = require('multer')
 const uploads = multer({ dest: 'uploads/products' })
@@ -28,6 +28,8 @@ module.exports = server => {
     router.post('/view',upload.none(),view);
 
     router.post('/details/:id',upload.none(),details);
+
+    router.post('/product-details/:id',upload.none(),productDetails);
 
     router.put('/update/:id',uploadMiddleware,update);
 

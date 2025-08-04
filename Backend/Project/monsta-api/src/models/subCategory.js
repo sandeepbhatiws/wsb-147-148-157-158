@@ -7,6 +7,13 @@ const subCategorySchema = new mongoose.Schema({
         required: [true, 'Name is required'],
         match: /^[a-zA-Z ]{2,15}$/,
     },
+    product_ids : [
+        {
+            type : Schema.Types.ObjectId,
+            default : [],
+            ref: 'products'
+        }
+    ],
     parent_category_id : {
         type : String,
         required: [true, 'Parent category is required'],

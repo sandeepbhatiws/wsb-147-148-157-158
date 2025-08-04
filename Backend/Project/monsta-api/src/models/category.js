@@ -22,6 +22,13 @@ const categorySchema = new mongoose.Schema({
         type: String,
         default : ''
     },
+    product_ids : [
+        {
+            type : Schema.Types.ObjectId,
+            default : [],
+            ref: 'products'
+        }
+    ],
     sub_categories_ids : [
         {
             type : Schema.Types.ObjectId,

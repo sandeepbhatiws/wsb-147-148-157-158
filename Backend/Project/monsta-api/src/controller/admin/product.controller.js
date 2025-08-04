@@ -1,4 +1,6 @@
 const product = require('../../models/product.js');
+const category = require('../../models/category.js');
+const subCategory = require('../../models/subCategory.js');
 require('dotenv').config()
 const slugify  = require('slugify');
 
@@ -27,7 +29,6 @@ exports.create = async(request, response) => {
 
     saveData.slug = await generateUniqueSlug(product, slug);
 
-    console.log(request.files);
     if(request.files){
         saveData.image = request.files.image ? request.files.image[0].filename : '';
     }
@@ -38,7 +39,35 @@ exports.create = async(request, response) => {
 
     var data = new product(saveData);
     await data.save()
-    .then((result) => {
+    .then(async(result) => {
+
+        if(request.body.parent_categories_ids && request.body.parent_categories_ids.length > 0){
+            await category.updateMany(
+            { 
+                _id: request.body.parent_categories_ids
+            }, { 
+                $push: { 
+                    product_ids: { 
+                        $each: [result._id] 
+                    } 
+                } 
+            });
+        }
+
+        if(request.body.sub_categories_ids && request.body.sub_categories_ids.length > 0){
+            await subCategory.updateMany(
+            { 
+                _id: request.body.sub_categories_ids
+            }, { 
+                $push: { 
+                    product_ids: { 
+                        $each: [result._id] 
+                    } 
+                } 
+            });
+        }
+
+
         const output = {
             _status : true,
             _message : 'Record Inserted !!',
@@ -112,14 +141,12 @@ exports.view = async(request, response) => {
         filter.$or = orCondition;
     }
 
-    var totalRecords = await category.find(filter).countDocuments();
+    var totalRecords = await product.find(filter).countDocuments();
 
-    await category.find(filter)
-    .select('_id name sub_categories_ids image order status')
+    await product.find(filter)
+    .populate('parent_categories_ids', 'name')
+    .populate('colors_ids', 'name')
     .populate('sub_categories_ids', 'name')
-    .sort({
-        order : 'asc'
-    })
     .sort({
         _id : 'desc'
     })
@@ -135,7 +162,7 @@ exports.view = async(request, response) => {
                     current_page : page,
                     total_pages : Math.ceil(totalRecords / limit)
                 },
-                _image_path : process.env.category_image_url,
+                _image_path : process.env.product_image_url,
                 _data : result
             }
 
@@ -164,13 +191,50 @@ exports.view = async(request, response) => {
 
 exports.details = async(request, response) => {
 
-    await category.findById(request.params.id)
+    await product.findById(request.params.id)
     .then((result) => {
         if(result){
             const output = {
                 _status : true,
                 _message : 'Record Fetch !!',
-                _image_path : process.env.category_image_url,
+                _image_path : process.env.product_image_url,
+                _data : result
+            }
+
+            response.send(output);
+        } else {
+            const output = {
+                _status : false,
+                _message : 'No Record Found !!',
+                _data : result
+            }
+
+            response.send(output);
+        }
+    })
+    .catch((error) => {
+        const output = {
+            _status : false,
+            _message : 'Something Went Wrong !!',
+            _data : error
+        }
+
+        response.send(output);
+    });
+}
+
+exports.productDetails = async(request, response) => {
+
+    await product.findById(request.params.id)
+    .populate('parent_categories_ids', 'name')
+    .populate('colors_ids', 'name')
+    .populate('sub_categories_ids', 'name')
+    .then((result) => {
+        if(result){
+            const output = {
+                _status : true,
+                _message : 'Record Fetch !!',
+                _image_path : process.env.product_image_url,
                 _data : result
             }
 
@@ -200,16 +264,55 @@ exports.update = async(request, response) => {
 
     var saveData = request.body;
  
-    if(request.file){
-        saveData.image = request.file.filename
+    var slug = slugify(request.body.name, {
+        lower: true,
+        strict: true,
+        trim: true
+    })
+
+    saveData.slug = await generateUniqueSlug(product, slug);
+
+    if(request.files){
+        saveData.image = request.files.image ? request.files.image[0].filename : '';
     }
 
-    await category.updateOne({
+    if(request.files && request.files.images){
+        saveData.images = request.files.images.map(file => file.filename); 
+    }
+
+    await product.updateOne({
         _id : request.params.id
     }, {
         $set : saveData
     })
-    .then((result) => {
+    .then(async(result) => {
+
+        if(request.body.parent_categories_ids && request.body.parent_categories_ids.length > 0){
+            await category.updateMany(
+            { 
+                _id: request.body.parent_categories_ids
+            }, { 
+                $push: { 
+                    product_ids: { 
+                        $each: [result._id] 
+                    } 
+                } 
+            });
+        }
+
+        if(request.body.sub_categories_ids && request.body.sub_categories_ids.length > 0){
+            await subCategory.updateMany(
+            { 
+                _id: request.body.sub_categories_ids
+            }, { 
+                $push: { 
+                    product_ids: { 
+                        $each: [result._id] 
+                    } 
+                } 
+            });
+        }
+
         const output = {
             _status : true,
             _message : 'Record Updated !!',
@@ -237,7 +340,7 @@ exports.update = async(request, response) => {
 }
 
 exports.changeStatus = async(request, response) => {
-   await category.updateMany({
+   await product.updateMany({
         _id : request.body.id
     }, [{
         $set : {
@@ -274,7 +377,7 @@ exports.changeStatus = async(request, response) => {
 }
 
 exports.destroy = async(request, response) => {
-    await category.updateMany({
+    await product.updateMany({
         _id : request.body.id
     }, {
         $set : {

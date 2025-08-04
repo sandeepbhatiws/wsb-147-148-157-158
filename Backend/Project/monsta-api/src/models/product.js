@@ -98,7 +98,7 @@ const productSchema = new mongoose.Schema({
             ref: 'materials'
         }
     ],
-    Colors_ids : [
+    colors_ids : [
         {
             type : Schema.Types.ObjectId,
             default : [],
