@@ -281,7 +281,18 @@ export default function ViewCategory() {
                               </td>
 
                               <td class=" py-4">
-                                {value.parent_category_id}
+                                {/* {
+                                  value.parent_category_ids.length > 0
+                                    ?
+                                    value.parent_category_ids.map((v, i) => {
+                                      return (
+                                        v.name+', '
+                                      )
+                                    })
+                                    :
+                                    'No Parent Category'
+                                } */}
+                                {value.parent_category_id.name}
                               </td>
 
                               <td class=" py-4">
@@ -290,7 +301,7 @@ export default function ViewCategory() {
 
                               
                               <td class=" py-4">
-                                <img class="w-10 h-10 rounded-full" src={imageURL + value.image} alt="Jese image" />
+                                {/* <img class="w-10 h-10 rounded-full" src={imageURL + value.image} alt="Jese image" /> */}
                               </td>
                               <td class=" py-4">
                                 {value.order}

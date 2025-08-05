@@ -120,6 +120,14 @@ exports.view = async(request, response) => {
         addCondition.push({ status : false });
     }
 
+    // if(request.body.parent_categories_ids != undefined && request.body.parent_categories_ids.length > 0){
+    //     addCondition.push({ parent_categories_ids : { $in : request.body.parent_categories_ids } });
+    // }
+
+    if(request.body.parent_categories_ids != undefined && request.body.parent_categories_ids != ''){
+        addCondition.push({ parent_categories_ids : { $in : request.body.parent_categories_ids } });
+    }
+
     const orCondition = [];
 
     if(request.body != undefined){
