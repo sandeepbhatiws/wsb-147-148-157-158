@@ -5,44 +5,166 @@ import "dropify/dist/js/dropify.min.js";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { useForm } from 'react-hook-form';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function ProductDetails() {
 
+  const params = useParams();
+  const updateId = params.id;
+
+  const navigate = useNavigate();
+  let [productDetails, setProductDetails] = useState('');
+  let [imageURL, setImageURl] = useState('');
+  let [colors, setColors] = useState([]);
+  let [categories, setCategories] = useState([]);
+  let [subCategories, setSubCategories] = useState([]);
+
   useEffect(() => {
-    $(".dropify").dropify({
-      messages: {
-        default: "Drag and drop ",
-        replace: "Drag and drop ",
-        remove: "Remove",
-        error: "Oops, something went wrong"
-      }
-    });
+    axios.post(import.meta.env.VITE_API_BASE_URL + import.meta.env.VITE_VIEW_COLOR_URL, {
+      // status: 1,
+      limit: 100
+    })
+      .then((result) => {
+        if (result.data._status == true) {
+          setColors(result.data._data);
+        } else {
+          setColors([]);
+          toast.error(result.data._message);
+        }
+      })
+      .catch(() => {
+        toast.error('Something went wrong');
+      })
   }, []);
 
-  const [value, setValue] = useState('');
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors }
-  } = useForm();
-
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // alert("Product Created Successfully!");
-  };
-  // update work
-  const [updateIdState, setUpdateIdState] = useState(false)
-  let updateId = useParams().id
   useEffect(() => {
-    if (updateId == undefined) {
-      setUpdateIdState(false)
+    axios.post(import.meta.env.VITE_API_BASE_URL + import.meta.env.VITE_VIEW_CATEGORY_URL, {
+      // status: 1,
+      limit: 100
+    })
+      .then((result) => {
+        if (result.data._status == true) {
+          setCategories(result.data._data);
+        } else {
+          setCategories([]);
+          toast.error(result.data._message);
+        }
+      })
+      .catch(() => {
+        toast.error('Something went wrong');
+      })
+  }, []);
+
+  useEffect(() => {
+    const dropifyElement = $("#image");
+
+    if (dropifyElement.data("dropify")) {
+      dropifyElement.data("dropify").destroy();
+      dropifyElement.removeData("dropify");
     }
-    else {
-      setUpdateIdState(true)
+
+    // **Force Update Dropify Input**
+    dropifyElement.replaceWith(
+      `<input type="file" accept="image/*" name="image" id="image"
+            class="dropify" data-height="250" data-default-file="${imageURL}"/>`
+    );
+
+    // **Reinitialize Dropify**
+    $("#image").dropify();
+
+  }, [imageURL]); // ✅ Runs when `defaultImage` updates
+
+
+  useEffect(() => {
+    if (updateId) {
+      axios.post(`http://localhost:8001/api/admin/products/details/${updateId}`)
+        .then((result) => {
+          if (result.data._status == true) {
+            setProductDetails(result.data._data)
+            setImageURl(result.data._image_path + result.data._data.image)
+          } else {
+            toast.error(result.data._message);
+
+            for (var value of result.data._data) {
+              toast.error(value);
+            }
+
+          }
+        })
+        .catch(() => {
+          toast.error('Something went wrong');
+        })
     }
-  }, [updateId])
+  }, [updateId]);
+
+  const formHandler = (event) => {
+    event.preventDefault();
+
+    if (!updateId) {
+      // Create Product
+      axios.post('http://localhost:8001/api/admin/products/create', event.target)
+        .then((result) => {
+          if (result.data._status == true) {
+            toast.success(result.data._message);
+            navigate('/product/view');
+          } else {
+            toast.error(result.data._message);
+
+            for (var value of result.data._data) {
+              toast.error(value);
+            }
+
+          }
+        })
+        .catch(() => {
+          toast.error('Something went wrong');
+        })
+    } else {
+      //Update Product
+      axios.put('http://localhost:8001/api/admin/products/update/' + updateId, event.target)
+        .then((result) => {
+          if (result.data._status == true) {
+            toast.success(result.data._message);
+            navigate('/product/view');
+          } else {
+            toast.error(result.data._message);
+
+            for (var value of result.data._data) {
+              toast.error(value);
+            }
+
+          }
+        })
+        .catch(() => {
+          toast.error('Something went wrong');
+        })
+    }
+
+  }
+
+  const getSubCategories = (event) => {
+    const categoryId = event.target.value; 
+
+    axios.post(import.meta.env.VITE_API_BASE_URL + import.meta.env.VITE_VIEW_SUB_CATEGORY_URL, {
+      // status: 1,
+      parent_category_id: categoryId,
+      limit: 100
+    })
+      .then((result) => {
+        if (result.data._status == true) {
+          setSubCategories(result.data._data);
+        } else {
+          setSubCategories([]);
+          toast.error(result.data._message);
+        }
+      })
+      .catch(() => {
+        toast.error('Something went wrong');
+      })
+  };
+
   return (
     <section className="w-full">
 
@@ -62,19 +184,16 @@ export default function ProductDetails() {
           <li aria-current="page">
             <div className="flex items-center">
               /
-              <span className="ms-1 text-md font-medium text-gray-500 md:ms-2">{updateIdState ? "Update" : "Add"}</span>
+              <span className="ms-1 text-md font-medium text-gray-500 md:ms-2">{updateId ? "Update" : "Add"}</span>
             </div>
           </li>
         </ol>
       </nav>
 
+      <div className='w-full px-6 py-6'>
 
-
-      <div className='w-full px-6 py-6  '>
-
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={ formHandler } autoComplete='off'>
           <div className="grid grid-cols-3 gap-[10px] ">
-            {/* for left */}
             <div className="for-images ">
 
               <div className="">
@@ -86,255 +205,64 @@ export default function ProductDetails() {
                 </label>
                 <input
                   type="file"
-                  id="ProductImage"
+                  id="image"
                   className="dropify"
                   data-height="160"
-                  {...register("productImage", { required: "Product Image is required" })}
                 />
-                {errors.productImage && <p className="text-red-500 text-sm">{errors.productImage.message}</p>}
-
-
               </div>
 
-              <div className="">
-                <label
-                  htmlFor="backImage"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Back Image
-                </label>
-                <input
-                  type="file"
-                  id="backImage"
-                  className="dropify"
-                  data-height="160"
-                  {...register("backImage", { required: "Back Image is required" })}
-                />
-                {errors.backImage && <p className="text-red-500 text-sm">{errors.backImage.message}</p>}
+              
+
               </div>
-
-              <div className="">
+              <div className="col-span-2">
+              <div>
                 <label
-                  htmlFor="GalleryImage"
+                  htmlFor="ProductName"
                   className="block  text-md font-medium text-gray-900 text-[#76838f]"
                 >
-                  Gallery Image
-                </label>
-                <input
-                  type="file"
-                  id="GalleryImage"
-                  className="dropify"
-                  data-height="160"
-                  {...register("GalleryImage", { required: "Gallery Image is required" })}
-                />
-                {errors.GalleryImage && <p className="text-red-500 text-sm">{errors.GalleryImage.message}</p>}
-              </div>
-            </div>
-
-            {/* for midd */}
-            <div className="middle">
-
-              <div className="mb-5">
-                <label
-                  htmlFor="Prodct_Name"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Prodct Name
+                  Product Name
                 </label>
                 <input
                   type="text"
-                  className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3"
-                  placeholder='Prodct Name'
-                  {...register("Prodct_Name", { required: "Prodct Name is required" })}
+                  name="name"
+                  defaultValue={productDetails.name}
+                  className="border-2 border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                  placeholder="Enter Product Name"
                 />
-                {errors.Prodct_Name && <p className="text-red-500 text-sm">{errors.Prodct_Name.message}</p>}
               </div>
 
-              <div className="mb-5">
+              <div>
                 <label
-                  htmlFor="categoryName"
+                  htmlFor="ProductCode"
                   className="block  text-md font-medium text-gray-900 text-[#76838f]"
                 >
-                  Select Sub Category
-                </label>
-                <select
-                  {...register("Sub_Category", { required: "Sub Category is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Select Category</option>
-                  <option value="mobile">Mobile Phones</option>
-                  <option value="laptop">Laptops</option>
-                  <option value="men">Men's Wear</option>
-                  <option value="women">Women's Wear</option>
-
-                </select>
-                {errors.Sub_Category && <p className="text-red-500 text-sm">{errors.Sub_Category.message}</p>}
-
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Select Meterial
-                </label>
-                <select
-                  {...register("Meterial", { required: "Meterial is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-                  <option value="">Neem</option>
-                  <option value="">Babbul</option>
-                  <option value="">Neem</option>
-                  <option value="">Babbul</option>
-                  <option value="">Neem</option>
-                  <option value="">Babbul</option>
-                  <option value="">Neem</option>
-                  <option value="">Babbul</option>
-
-                </select>
-                {errors.Meterial && <p className="text-red-500 text-sm">{errors.Meterial.message}</p>}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Select Prodcut Type
-                </label>
-                <select
-                  {...register("Prodcut_Type", { required: "Prodcut Type is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-                  <option value="">Featured</option>
-                  <option value="">New Arrivals</option>
-                  <option value="">Onsale</option>
-
-
-                </select>
-                {errors.Prodcut_Type && <p className="text-red-500 text-sm">{errors.Prodcut_Type.message}</p>}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Is Top Rated
-                </label>
-                <select
-                  {...register("Rated", { required: "Top Rated is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-                  <option value="">Yes</option>
-                  <option value="">No</option>
-
-                </select>
-                {errors.Rated && <p className="text-red-500 text-sm">{errors.Rated.message}</p>}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Actual Price
+                  Product Code
                 </label>
                 <input
                   type="text"
-                  {...register("Actual_Price", { required: " Actual Price is required" })}
-                  className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3"
-                  placeholder='Actual Price'
+                  name="product_code"
+                  defaultValue={productDetails.product_code}
+                  className="border-2 border-gray-300 text-gray-900 mb-6 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-3"
+                  placeholder="Enter Product Code"
                 />
-                {errors.Actual_Price && <p className="text-red-500 text-sm">{errors.Actual_Price.message}</p>}
               </div>
 
               <div className="mb-5">
                 <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Total In Stocks
-                </label>
-                <input
-                  type="text"
-                  {...register("Stocks", { required: "Stocks is required" })}
-                  className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3"
-                  placeholder='Total In Stocks'
-                />
-                {errors.Stocks && <p className="text-red-500 text-sm">{errors.Stocks.message}</p>}
-              </div>
-
-
-
-            </div>
-
-            {/* for right */}
-            <div className="right-items">
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Select Parent Category
-                </label>
-                <select
-                  {...register("Parent_Category", { required: "Parent Category is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-
-                  <option value="mobile">Mobile Phones</option>
-                  <option value="laptop">Laptops</option>
-
-                  <option value="men">Men's Wear</option>
-                  <option value="women">Women's Wear</option>
-
-                </select>
-                {errors.Parent_Category && <p className="text-red-500 text-sm">{errors.Parent_Category.message}</p>}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Select Sub Sub Category
-                </label>
-                <select
-                  {...register("Sub_Sub_Category", { required: "Sub Sub Category is required" })}
-                  className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-
-                  <option value="mobile">Mobile Phones</option>
-                  <option value="laptop">Laptops</option>
-
-                  <option value="men">Men's Wear</option>
-                  <option value="women">Women's Wear</option>
-
-                </select>
-                {errors.Sub_Sub_Category && <p className="text-red-500 text-sm">{errors.Sub_Sub_Category.message}</p>}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
+                  htmlFor="colorName"
                   className="block  text-md font-medium text-gray-900 text-[#76838f]"
                 >
                   Select Color
                 </label>
                 <select
-                  {...register("Color", { required: "Color is required" })}
                   className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-
-                  <option value="">Red</option>
-                  <option value="">Blue</option>
-
-                  <option value="">Green</option>
-                  <option value="">Gray</option>
-
+                  <option value="">Select Color</option>
+                  {colors.map((color, index) => (
+                    <option key={index} value={color._id}>
+                      {color.name}
+                    </option>
+                  ))}
                 </select>
-                {errors.Color && <p className="text-red-500 text-sm">{errors.Color.message}</p>}
               </div>
 
               <div className="mb-5">
@@ -342,91 +270,43 @@ export default function ProductDetails() {
                   htmlFor="categoryName"
                   className="block  text-md font-medium text-gray-900 text-[#76838f]"
                 >
-                  Is Best Selling
+                  Select Category
                 </label>
                 <select
-                  {...register("Selling", { required: " Best Selling is required" })}
+                  onChange={ getSubCategories}
                   className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-                  <option value="">Yes</option>
-                  <option value="">No</option>
-
+                  <option value="">Select Category</option>
+                  {categories.map((category, index) => (
+                    <option key={index} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
-                {errors.Selling && <p className="text-red-500 text-sm">{errors.Selling.message}</p>}
               </div>
 
               <div className="mb-5">
                 <label
-                  htmlFor="categoryName"
+                  htmlFor="subCategoryName"
                   className="block  text-md font-medium text-gray-900 text-[#76838f]"
                 >
-                  Is Upsell
+                  Select Sub Category
                 </label>
                 <select
-                  {...register("Upsell", { required: "Upsell is required" })}
                   className="text-[19px] text-[#76838f] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg block w-full py-2.5 px-3">
-                  <option value="">Nothing Selected</option>
-                  <option value="">Yes</option>
-                  <option value="">No</option>
-
+                  <option value="">Select Sub Category</option>
+                  {subCategories.map((category, index) => (
+                    <option key={index} value={category._id}>
+                      {category.name}
+                    </option>
+                  ))}
                 </select>
-                {errors.Upsell && <p className="text-red-500 text-sm">{errors.Upsell.message}</p>}
               </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Sale Price
-                </label>
-                <input
-                  type="text"
-                  className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3"
-                  placeholder=' Sale Price'
-                  {...register("Sale_Price", { required: "Sale Price is required" })}
-                />
-                {errors.Sale_Price && <p className="text-red-500 text-sm">{errors.Sale_Price.message}</p>}
               </div>
-
-
-              <div className="mb-5">
-                <label
-                  htmlFor="categoryName"
-                  className="block  text-md font-medium text-gray-900 text-[#76838f]"
-                >
-                  Order
-                </label>
-                <input
-                  type="text"
-                  className="text-[19px] border-2 shadow-sm border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 px-3"
-                  placeholder='Order'
-                  {...register("Order", { required: " Order is required" })}
-                />
-                {errors.Order && <p className="text-red-500 text-sm">{errors.Order.message}</p>}
-              </div>
-
-
-            </div>
           </div>
-
-          <div className='py-[40px]'>
-            <label
-              htmlFor="categoryImage"
-              className="block  text-md font-medium text-gray-900 text-[#76838f]"
-            >
-              Description
-            </label>
-            <ReactQuill theme="snow" value={value} onChange={setValue} className='h-[200px]' {...register("description", { required: "Description is required" })} />
-
-          </div>
-          {errors.description && (
-            <p className="text-red-500 text-sm">{errors.description.message}</p>
-          )}
 
           <button class=" mt-5 text-white bg-gradient-to-br from-purple-600 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 ">
-             {updateIdState ? "Update Product " : "Add Product"}
-             </button>
+            {updateId ? "Update Product " : "Add Product"}
+          </button>
 
         </form>
 
