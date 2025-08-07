@@ -21,6 +21,7 @@ server.get('/', (request, response) => {
 });
 
 server.use('/uploads/categories', express.static('uploads/categories'));
+server.use('/uploads/products', express.static('uploads/products'));
 
 
 // Admin API URls
