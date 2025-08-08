@@ -31,6 +31,7 @@ require('./src/routes/admin/subCategories.routes.js')(server);
 require('./src/routes/admin/products.routes.js')(server);
 
 //Website API URLS
+require('./src/routes/website/user.routes.js')(server);
 
 
 server.listen(process.env.PORT, () => {
