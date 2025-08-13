@@ -1,5 +1,5 @@
 const express = require('express');
-const { register, login } = require('../../controller/website/user.controller');
+const { register, login, viewProfile } = require('../../controller/website/user.controller');
 const router = express.Router();
 const multer  = require('multer')
 const uploads = multer({ dest: 'uploads/users' })
@@ -23,9 +23,11 @@ module.exports = server => {
 
     var singleImage = upload.single('image');
 
-    router.get('/register',upload.none(),register);
+    router.post('/register',upload.none(),register);
 
-    router.get('/login',upload.none(),login);
+    router.post('/login',upload.none(),login);
+
+    router.post('/view-profile',upload.none(),viewProfile);
 
     server.use('/api/website/users', router);
 }
