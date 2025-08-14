@@ -178,7 +178,6 @@ exports.login = async(request, response) => {
 // View Profile API
 exports.viewProfile = async(request, response) => {
 
-    console.log(request.headers.authorization);
     var token = request.headers.authorization.split(' ')[1];
 
     var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
@@ -220,6 +219,137 @@ exports.viewProfile = async(request, response) => {
 
                 response.send(output);
             });
+        }
+    })
+}
+
+// Update Profile API
+exports.updateProfile = async(request, response) => {
+
+    var token = request.headers.authorization.split(' ')[1];
+
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
+        if (error) {
+            const output = {
+                _status: false,
+                _message: 'Token verification failed',
+                _data: null
+            };
+            return response.send(output);
+        } else {
+            // var saveData = {
+            //     name: request.body.name,
+            //     mobile_number: request.body.mobile_number
+            // };
+
+            // var saveData = request.body;
+
+            var saveData= {};
+
+            if(request.body.name !== undefined && request.body.name !== '')  {
+                saveData.name = request.body.name;
+            }
+
+            if(request.body.mobile_number !== undefined && request.body.mobile_number !== '')  {
+                saveData.mobile_number = request.body.mobile_number;
+            }
+
+            if(request.file) {
+                saveData.image = request.file.filename;
+            }
+
+            await user.updateOne({ _id: value.data._id }, { $set: saveData })
+            .then((result) => {
+                const output = {
+                    _status : true,
+                    _message : 'Profile Updated !!',
+                    _data : result
+                }
+                response.send(output);
+            })
+            .catch((error) => {
+                const output = {
+                    _status : false,
+                    _message : 'Something Went Wrong !!',
+                    _data : error
+                }
+                response.send(output);
+            });
+        }
+    })
+}
+
+// Change Password API
+exports.changePassword = async(request, response) => {
+
+    var token = request.headers.authorization.split(' ')[1];
+
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
+        if (error) {
+            const output = {
+                _status: false,
+                _message: 'Token verification failed',
+                _data: null
+            };
+            return response.send(output);
+        } else {
+            const existingUser = await user.findOne({ _id: value.data._id, deleted_at: null });
+
+            if(existingUser) {
+                if(!await bcrypt.compare(request.body.current_password, existingUser.password)){
+                    const output = {
+                        _status: false,
+                        _message: 'Your current password is incorrect.',
+                        _data: null
+                    };
+                    return response.send(output);
+                }
+
+                if(request.body.current_password == request.body.new_password) {
+                    const output = {
+                        _status: false,
+                        _message: 'Current password and new password cannot be same.',
+                        _data: null
+                    };
+                    return response.send(output);
+                }
+
+                if(request.body.new_password !== request.body.confirm_password) {
+                    const output = {
+                        _status: false,
+                        _message: 'New password and confirm password do not match.',
+                        _data: null
+                    };
+                    return response.send(output);
+                }
+
+                var newPassword = await bcrypt.hash(request.body.new_password, saltRounds);
+
+                await user.updateOne({ _id: value.data._id }, { $set: { password: newPassword } })
+                .then((result) => {
+                    const output = {
+                        _status : true,
+                        _message : 'Password Changed Successfully !!',
+                        _data : result
+                    }
+                    response.send(output);
+                })
+                .catch((error) => {
+                    const output = {
+                        _status : false,
+                        _message : 'Something Went Wrong !!',
+                        _data : error
+                    }
+                    response.send(output);
+                });
+            } else {
+                const output = {
+                    _status: false,
+                    _message: 'User not found.',
+                    _data: null
+                };
+                return response.send(output);
+            }
         }
     })
 }
