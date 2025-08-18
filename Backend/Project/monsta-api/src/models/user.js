@@ -31,6 +31,12 @@ const userSchema = new mongoose.Schema({
         min: 0,
         max: 1000
     },
+    role_type :{
+        type : String,
+        required : [true, 'This field is required'],
+        default : 'User',
+        enum : ['User', 'Admin']
+    },
     status : {
         type : Boolean,
         default : 1,

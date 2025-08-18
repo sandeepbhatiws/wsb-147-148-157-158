@@ -3,15 +3,16 @@ require('dotenv').config()
 var jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
+const nodemailer = require("nodemailer");
 
 // Register User API
-exports.register = async(request, response) => {
+exports.register = async (request, response) => {
 
     // Check if user already exists
-    const existingUser = await user.findOne({ email: request.body.email, deleted_at: null });
+    const existingUser = await user.findOne({ email: request.body.email, deleted_at: null, role_type : 'User' });
 
-    if(existingUser) {
-        const output = {   
+    if (existingUser) {
+        const output = {
             _status: false,
             _message: 'User already exists with this email address.',
             _data: null
@@ -22,58 +23,59 @@ exports.register = async(request, response) => {
     var password = await bcrypt.hash(request.body.password, saltRounds);
 
     var saveData = {
-        name : request.body.name,
-        email : request.body.email,
-        password : password,
-        mobile_number : request.body.mobile_number,
+        name: request.body.name,
+        email: request.body.email,
+        password: password,
+        mobile_number: request.body.mobile_number,
+        role_type : 'User'
     }
-    
+
     var data = new user(saveData);
     await data.save()
-    .then((result) => {
+        .then((result) => {
 
-        var token = jwt.sign(
-        { 
-            data: result
-        }, 
-        process.env.API_TOKEN_KEY);
+            var token = jwt.sign(
+                {
+                    data: result
+                },
+                process.env.API_TOKEN_KEY);
 
-        const output = {
-            _status : true,
-            _message : 'User Registerd !!',
-            _token : token,
-            _data : result
-        }
+            const output = {
+                _status: true,
+                _message: 'User Registerd !!',
+                _token: token,
+                _data: result
+            }
 
-        response.send(output);
-    })
-    .catch((error) => {
+            response.send(output);
+        })
+        .catch((error) => {
 
-        var errorMessages = [];
+            var errorMessages = [];
 
-        for (index in error.errors){
-            errorMessages.push(error.errors[index].message);
-        }
+            for (index in error.errors) {
+                errorMessages.push(error.errors[index].message);
+            }
 
-        const output = {
-            _status : false,
-            _message : 'Something Went Wrong !!',
-            _data : errorMessages
-        }
+            const output = {
+                _status: false,
+                _message: 'Something Went Wrong !!',
+                _data: errorMessages
+            }
 
-        response.send(output);
-    });
+            response.send(output);
+        });
 };
 
 // Login API
-exports.login = async(request, response) => {
+exports.login = async (request, response) => {
 
     // Check if user exists
-    const existingUser = await user.findOne({ email: request.body.email, deleted_at: null });
+    const existingUser = await user.findOne({ email: request.body.email, deleted_at: null, role_type : 'User' });
 
-    if(existingUser) {
+    if (existingUser) {
 
-        if(!await bcrypt.compare(request.body.password, existingUser.password)){
+        if (!await bcrypt.compare(request.body.password, existingUser.password)) {
             const output = {
                 _status: false,
                 _message: 'Your password is incorrect.',
@@ -83,7 +85,7 @@ exports.login = async(request, response) => {
         }
 
         // 
-        if(existingUser.status === false) {
+        if (existingUser.status === false) {
             const output = {
                 _status: false,
                 _message: 'Your account is inactive. Please contact support.',
@@ -93,13 +95,13 @@ exports.login = async(request, response) => {
         }
 
         var token = jwt.sign(
-        { 
-            data: existingUser
-        }, 
-        process.env.API_TOKEN_KEY);
+            {
+                data: existingUser
+            },
+            process.env.API_TOKEN_KEY);
 
         const output = {
-            _status: true,  
+            _status: true,
             _message: 'Login successful.',
             _token: token,
             _data: existingUser
@@ -107,80 +109,20 @@ exports.login = async(request, response) => {
         return response.send(output);
 
     } else {
-        const output = {    
+        const output = {
             _status: false,
             _message: 'Invalid email.',
             _data: null
         };
         return response.send(output);
     }
-
-    
-
-
-
-    // var verify = jwt.verify(request.query.token, process.env.API_TOKEN_KEY);
-
-    // const output = {
-    //             _status : true,
-    //             _message : 'Register Succussfully !!',
-    //             _data : verify,
-    //             // _decoded : decoded
-    //         }
-
-    //         response.send(output);
-
-    // { expiresIn: '1h'
-
-    // var verify = jwt.verify(token, process.env.API_TOKEN_KEY, (err, decoded) => {
-    //     if (err) {          
-    //         return response.status(500).send('Token verification failed');
-    //     } else { 
-    //         const output = {
-    //             _status : true,
-    //             _message : 'Register Succussfully !!',
-    //             _data : token,
-    //             _decoded : decoded
-    //         }
-
-    //         response.send(output);
-    //     }
-    // });
-
-    
-
-    // .then((result) => {
-    //     const output = {
-    //         _status : true,
-    //         _message : 'Record Deleted !!',
-    //         _data : result
-    //     }
-
-    //     response.send(output);
-    // })
-    // .catch((error) => {
-
-    //     var errorMessages = [];
-
-    //     for (index in error.errors){
-    //         errorMessages.push(error.errors[index].message);
-    //     }
-
-    //     const output = {
-    //         _status : false,
-    //         _message : 'Something Went Wrong !!',
-    //         _data : errorMessages
-    //     }
-
-    //     response.send(output);
-    // });
 }
 // View Profile API
-exports.viewProfile = async(request, response) => {
+exports.viewProfile = async (request, response) => {
 
     var token = request.headers.authorization.split(' ')[1];
 
-    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async (error, value) => {
         if (error) {
             const output = {
                 _status: false,
@@ -189,46 +131,46 @@ exports.viewProfile = async(request, response) => {
             };
             return response.send(output);
         } else {
-            await user.findById(value.data._id)
-            .then((result) => {
-                if(result){
+            await user.findOne({ _id :value.data._id, role_type : 'User'})
+                .then((result) => {
+                    if (result) {
+                        const output = {
+                            _status: true,
+                            _message: 'Record Fetch !!',
+                            _image_path: process.env.user_image_url,
+                            _data: result
+                        }
+
+                        response.send(output);
+                    } else {
+                        const output = {
+                            _status: false,
+                            _message: 'No Record Found !!',
+                            _data: result
+                        }
+
+                        response.send(output);
+                    }
+                })
+                .catch((error) => {
                     const output = {
-                        _status : true,
-                        _message : 'Record Fetch !!',
-                        _image_path : process.env.user_image_url,
-                        _data : result
+                        _status: false,
+                        _message: 'Something Went Wrong !!',
+                        _data: error
                     }
 
                     response.send(output);
-                } else {
-                    const output = {
-                        _status : false,
-                        _message : 'No Record Found !!',
-                        _data : result
-                    }
-
-                    response.send(output);
-                }
-            })
-            .catch((error) => {
-                const output = {
-                    _status : false,
-                    _message : 'Something Went Wrong !!',
-                    _data : error
-                }
-
-                response.send(output);
-            });
+                });
         }
     })
 }
 
 // Update Profile API
-exports.updateProfile = async(request, response) => {
+exports.updateProfile = async (request, response) => {
 
     var token = request.headers.authorization.split(' ')[1];
 
-    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async (error, value) => {
         if (error) {
             const output = {
                 _status: false,
@@ -244,47 +186,47 @@ exports.updateProfile = async(request, response) => {
 
             // var saveData = request.body;
 
-            var saveData= {};
+            var saveData = {};
 
-            if(request.body.name !== undefined && request.body.name !== '')  {
+            if (request.body.name !== undefined && request.body.name !== '') {
                 saveData.name = request.body.name;
             }
 
-            if(request.body.mobile_number !== undefined && request.body.mobile_number !== '')  {
+            if (request.body.mobile_number !== undefined && request.body.mobile_number !== '') {
                 saveData.mobile_number = request.body.mobile_number;
             }
 
-            if(request.file) {
+            if (request.file) {
                 saveData.image = request.file.filename;
             }
 
             await user.updateOne({ _id: value.data._id }, { $set: saveData })
-            .then((result) => {
-                const output = {
-                    _status : true,
-                    _message : 'Profile Updated !!',
-                    _data : result
-                }
-                response.send(output);
-            })
-            .catch((error) => {
-                const output = {
-                    _status : false,
-                    _message : 'Something Went Wrong !!',
-                    _data : error
-                }
-                response.send(output);
-            });
+                .then((result) => {
+                    const output = {
+                        _status: true,
+                        _message: 'Profile Updated !!',
+                        _data: result
+                    }
+                    response.send(output);
+                })
+                .catch((error) => {
+                    const output = {
+                        _status: false,
+                        _message: 'Something Went Wrong !!',
+                        _data: error
+                    }
+                    response.send(output);
+                });
         }
     })
 }
 
 // Change Password API
-exports.changePassword = async(request, response) => {
+exports.changePassword = async (request, response) => {
 
     var token = request.headers.authorization.split(' ')[1];
 
-    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async(error, value) => {
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async (error, value) => {
         if (error) {
             const output = {
                 _status: false,
@@ -293,10 +235,10 @@ exports.changePassword = async(request, response) => {
             };
             return response.send(output);
         } else {
-            const existingUser = await user.findOne({ _id: value.data._id, deleted_at: null });
+            const existingUser = await user.findOne({ _id: value.data._id, deleted_at: null, role_type : 'User' });
 
-            if(existingUser) {
-                if(!await bcrypt.compare(request.body.current_password, existingUser.password)){
+            if (existingUser) {
+                if (!await bcrypt.compare(request.body.current_password, existingUser.password)) {
                     const output = {
                         _status: false,
                         _message: 'Your current password is incorrect.',
@@ -305,7 +247,7 @@ exports.changePassword = async(request, response) => {
                     return response.send(output);
                 }
 
-                if(request.body.current_password == request.body.new_password) {
+                if (request.body.current_password == request.body.new_password) {
                     const output = {
                         _status: false,
                         _message: 'Current password and new password cannot be same.',
@@ -314,7 +256,7 @@ exports.changePassword = async(request, response) => {
                     return response.send(output);
                 }
 
-                if(request.body.new_password !== request.body.confirm_password) {
+                if (request.body.new_password !== request.body.confirm_password) {
                     const output = {
                         _status: false,
                         _message: 'New password and confirm password do not match.',
@@ -326,22 +268,22 @@ exports.changePassword = async(request, response) => {
                 var newPassword = await bcrypt.hash(request.body.new_password, saltRounds);
 
                 await user.updateOne({ _id: value.data._id }, { $set: { password: newPassword } })
-                .then((result) => {
-                    const output = {
-                        _status : true,
-                        _message : 'Password Changed Successfully !!',
-                        _data : result
-                    }
-                    response.send(output);
-                })
-                .catch((error) => {
-                    const output = {
-                        _status : false,
-                        _message : 'Something Went Wrong !!',
-                        _data : error
-                    }
-                    response.send(output);
-                });
+                    .then((result) => {
+                        const output = {
+                            _status: true,
+                            _message: 'Password Changed Successfully !!',
+                            _data: result
+                        }
+                        response.send(output);
+                    })
+                    .catch((error) => {
+                        const output = {
+                            _status: false,
+                            _message: 'Something Went Wrong !!',
+                            _data: error
+                        }
+                        response.send(output);
+                    });
             } else {
                 const output = {
                     _status: false,
@@ -354,235 +296,115 @@ exports.changePassword = async(request, response) => {
     })
 }
 
-// exports.create = async(request, response) => {
+// Forgot Password API
+exports.forgotPassword = async (request, response) => {
 
-//     var saveData = request.body;
+    const existingUser = await user.findOne({ email: request.body.email, deleted_at: null, role_type : 'User' });
 
-//     var slug = slugify(request.body.name, {
-//         replacement: '-',  // replace spaces with replacement character, defaults to `-`
-//         remove: undefined, // remove characters that match regex, defaults to `undefined`
-//         lower: true,      // convert to lower case, defaults to `false`
-//         strict: true,     // strip special characters except replacement, defaults to `false`
-//         locale: 'vi',      // language code of the locale to use
-//         trim: true         // trim leading and trailing replacement chars, defaults to `true`
-//     })
+    if (!existingUser) {
+        const output = {
+            _status: false,
+            _message: 'Email Id does not exit.',
+            _data: null
+        };
+        return response.send(output);
+    }
 
-//     saveData.slug = await generateUniqueSlug(category, slug);
- 
-//     if(request.file){
-//         saveData.image = request.file.filename
-//     }
+    var token = jwt.sign(
+    {
+        data: existingUser
+    },
+    process.env.API_TOKEN_KEY);
 
+    const transporter = nodemailer.createTransport({
+        // service : gmail,
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false, // true for 465, false for other ports
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASSWORD,
+        },
+    });
 
+    const info = await transporter.sendMail({
+        from: '"Monsta" <'+ process.env.EMAIL_USER +'>',
+        to: request.body.email,
+        subject: "Forgot Password",
+        // text: "Hello world?", // plain‑text body
+        html: "<b>Hello User</b>/n/n Reset Password - http://localhost:3000/reset-password/"+token, // HTML body
+    }).then(() => {
+        const output = {
+            _status: true,
+            _message: 'Email send succussfully !',
+            _data: null
+        };
+        return response.send(output);
+    })
+    .catch((error) => {
+        const output = {
+            _status: false,
+            _message: 'Something went wrong !!',
+            _data: error
+        };
+        return response.send(output);
+    })
+}
 
-// }
+// Reset Password API
+exports.resetPassword = async (request, response) => {
 
-// exports.view = async(request, response) => {
-    
-//     var limit = 15;
-//     var page = 1;
-//     var skip = 0;
+    var token = request.headers.authorization.split(' ')[1];
 
-//     if(request.body != undefined){
-//         var limit = request.body.limit ? request.body.limit : limit;
-//         var page = request.body.page ? request.body.page : page;
-//         var skip = (page - 1) * limit;
-//     }
+    var verify = jwt.verify(token, process.env.API_TOKEN_KEY, async (error, value) => {
+        if (error) {
+            const output = {
+                _status: false,
+                _message: 'Token verification failed',
+                _data: null
+            };
+            return response.send(output);
+        } else {
+            const existingUser = await user.findOne({ _id: value.data._id, deleted_at: null, role_type : 'User' });
 
-//     const addCondition = [
-//         {
-//             deleted_at : null, 
-//         }
-//     ];
+            if (existingUser) {
 
-//     if(request.body.status == true){
-//         addCondition.push({ status : true });
-//     }
+                if (request.body.new_password !== request.body.confirm_password) {
+                    const output = {
+                        _status: false,
+                        _message: 'New password and confirm password do not match.',
+                        _data: null
+                    };
+                    return response.send(output);
+                }
 
-//     if(request.body.status == false){
-//         addCondition.push({ status : false });
-//     }
+                var newPassword = await bcrypt.hash(request.body.new_password, saltRounds);
 
-//     const orCondition = [];
-
-//     if(request.body != undefined){
-//         if(request.body.name != undefined){
-//             if(request.body.name != ''){
-//                 var name = new RegExp(request.body.name, 'i');
-//                 orCondition.push({ name : name })
-//             }
-//         }
-//     }
-
-//     if(addCondition.length > 0){
-//         var filter = { $and : addCondition }
-//     } else {
-//         var filter = {}
-//     }
-
-//     if(orCondition.length > 0){
-//         filter.$or = orCondition;
-//     }
-
-//     var totalRecords = await category.find(filter).countDocuments();
-
-//     await category.find(filter)
-//     .select('_id name sub_categories_ids image order status')
-//     .populate('sub_categories_ids', 'name')
-//     .sort({
-//         order : 'asc'
-//     })
-//     .sort({
-//         _id : 'desc'
-//     })
-//     .limit(limit).skip(skip)
-//     .then((result) => {
-
-//         if(result.length > 0){
-//             const output = {
-//                 _status : true,
-//                 _message : 'Record Fetch !!',
-//                 _paggination : {
-//                     total_records : totalRecords,
-//                     current_page : page,
-//                     total_pages : Math.ceil(totalRecords / limit)
-//                 },
-//                 _image_path : process.env.category_image_url,
-//                 _data : result
-//             }
-
-//             response.send(output);
-//         } else {
-//             const output = {
-//                 _status : false,
-//                 _message : 'No Record Found !!',
-//                 _data : result
-//             }
-
-//             response.send(output);
-//         }
-        
-//     })
-//     .catch((error) => {
-//         const output = {
-//             _status : false,
-//             _message : 'Something Went Wrong !!',
-//             _data : error
-//         }
-
-//         response.send(output);
-//     });
-// }
-
-
-// exports.update = async(request, response) => {
-
-//     var saveData = request.body;
- 
-//     if(request.file){
-//         saveData.image = request.file.filename
-//     }
-
-//     await category.updateOne({
-//         _id : request.params.id
-//     }, {
-//         $set : saveData
-//     })
-//     .then((result) => {
-//         const output = {
-//             _status : true,
-//             _message : 'Record Updated !!',
-//             _data : result
-//         }
-
-//         response.send(output);
-//     })
-//     .catch((error) => {
-
-//         var errorMessages = [];
-
-//         for (index in error.errors){
-//             errorMessages.push(error.errors[index].message);
-//         }
-
-//         const output = {
-//             _status : false,
-//             _message : 'Something Went Wrong !!',
-//             _data : errorMessages
-//         }
-
-//         response.send(output);
-//     });
-// }
-
-// exports.changeStatus = async(request, response) => {
-//    await category.updateMany({
-//         _id : request.body.id
-//     }, [{
-//         $set : {
-//             status : {
-//                 $not : "$status"
-//             }
-//         }
-//     }])
-//     .then((result) => {
-//         const output = {
-//             _status : true,
-//             _message : 'Change Status successfully !!',
-//             _data : result
-//         }
-
-//         response.send(output);
-//     })
-//     .catch((error) => {
-
-//         var errorMessages = [];
-
-//         for (index in error.errors){
-//             errorMessages.push(error.errors[index].message);
-//         }
-
-//         const output = {
-//             _status : false,
-//             _message : 'Something Went Wrong !!',
-//             _data : errorMessages
-//         }
-
-//         response.send(output);
-//     });
-// }
-
-// exports.destroy = async(request, response) => {
-//     await category.updateMany({
-//         _id : request.body.id
-//     }, {
-//         $set : {
-//             deleted_at : Date.now()
-//         }
-//     })
-//     .then((result) => {
-//         const output = {
-//             _status : true,
-//             _message : 'Record Deleted !!',
-//             _data : result
-//         }
-
-//         response.send(output);
-//     })
-//     .catch((error) => {
-
-//         var errorMessages = [];
-
-//         for (index in error.errors){
-//             errorMessages.push(error.errors[index].message);
-//         }
-
-//         const output = {
-//             _status : false,
-//             _message : 'Something Went Wrong !!',
-//             _data : errorMessages
-//         }
-
-//         response.send(output);
-//     });
-// }
+                await user.updateOne({ _id: value.data._id }, { $set: { password: newPassword } })
+                    .then((result) => {
+                        const output = {
+                            _status: true,
+                            _message: 'Reset Password Successfully !!',
+                            _data: result
+                        }
+                        response.send(output);
+                    })
+                    .catch((error) => {
+                        const output = {
+                            _status: false,
+                            _message: 'Something Went Wrong !!',
+                            _data: error
+                        }
+                        response.send(output);
+                    });
+            } else {
+                const output = {
+                    _status: false,
+                    _message: 'User not found.',
+                    _data: null
+                };
+                return response.send(output);
+            }
+        }
+    })
+}
