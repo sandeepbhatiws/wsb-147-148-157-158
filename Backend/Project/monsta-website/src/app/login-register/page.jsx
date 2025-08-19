@@ -1,7 +1,28 @@
-import React from 'react'
+"use client"
+import React, { useState } from 'react'
 import "./login-register.css"
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 export default function page() {
+
+    const [registerFormStatus, setRegisterFormStatus] = useState(false);
+
+    const registerUser = (event) => {
+        event.preventDefault();
+        setRegisterFormStatus(true);
+
+        axios.post('localhost:80003/register')
+        .then(() => {
+
+        })
+        .catch(() => {
+            toast.error('Something went wrong !');
+            setRegisterFormStatus(false);
+        })
+    }
+
+
   return (
     <div>
     
@@ -55,17 +76,35 @@ export default function page() {
                 <div className="col-lg-6 col-md-6">
                     <div className="account_form register">
                         <h2>Register</h2>
-                        <form action="#">
+                        <form onSubmit={ registerUser } autoCapitalize='off'>
+                            <p>   
+                                <label>Name  <span>*</span></label>
+                                <input type="text" name='name'/>
+                             </p>
                             <p>   
                                 <label>Email address  <span>*</span></label>
-                                <input type="text"/>
+                                <input type="text" name='email'/>
                              </p>
+
+                            <p>   
+                                <label>Mobile Number <span>*</span></label>
+                                <input type="text" name='mobile_number'/>
+                             </p>
+
                              <p>   
                                 <label>Passwords <span>*</span></label>
-                                <input type="password"/>
+                                <input type="password" name='password'/>
                              </p>
                             <div className="login_submit">
-                                <button type="submit">Register</button>
+                                <button type="submit" disabled={ registerFormStatus ? 'disabled' : '' }>
+                                    {
+                                        registerFormStatus
+                                        ?
+                                        'Loading....'
+                                        :
+                                        'Register'
+                                    }
+                                    </button>
                             </div>
                         </form>
                     </div>    
