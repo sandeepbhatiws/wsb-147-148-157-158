@@ -1,11 +1,69 @@
 'use client'
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Col, Container, Form, Row } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '../Redux Toolkit/loginSlice';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState('dashboard');
     const [selectedTitle, setSelectedTitle] = useState("Mr.");
+
+    const router = useRouter();
+    const dispatch = useDispatch();
+    const userToken = useSelector((state) => {
+        return state.login.token;
+    })
+
+    const  [userProfile, setUserProfile] = useState('');
+
+    const logout = () => {
+        dispatch(logOut())
+        toast.success('Logout Succussfully.');
+        router.push('/');
+    }
+
+    useEffect(() => {
+        axios.post('http://localhost:8001/api/website/users/view-profile', {}, {
+            headers : {
+                'Authorization' : `Bearer ${ userToken }`
+            }
+        })
+        .then((result) => {
+            if(result.data._status == true){
+                setUserProfile(result.data._data);
+            } else {
+                toast.error(result.data._message);
+            }
+        })
+        .catch(() => {
+            toast.error('Something went wrong !');            
+        })
+    },[]);
+
+    const updateProfile = (event) => {
+        event.preventDefault();
+
+        axios.post('http://localhost:8001/api/website/users/update-profile', event.target, {
+            headers : {
+                'Authorization' : `Bearer ${ userToken }`
+            }
+        })
+        .then((result) => {
+            if(result.data._status == true){
+                setUserProfile(result.data._data);
+                toast.success(result.data._message)
+            } else {
+                toast.error(result.data._message);
+            }
+        })
+        .catch(() => {
+            toast.error('Something went wrong !');            
+        })
+    }
 
     return (
         <>
@@ -41,7 +99,7 @@ export default function DashboardPage() {
 
                                 <li><a onClick={() => setActiveTab('password')} className={`nav-link ${activeTab === 'password' ? 'active' : ''}`}>Change Password</a></li>
 
-                                <li><Link href="/" className='nav-link'>Logout</Link></li>
+                                <li onClick={ logout }><a className='nav-link'>Logout</a></li>
                             </ul>
                         </Col>
 
@@ -271,7 +329,9 @@ export default function DashboardPage() {
                                     <div className="login">
                                         <div className="account_form login_form_container">
                                             <div className="account_login_form">
-                                                <form id="personal_information" autoComplete="off" noValidate="noValidate" className="bv-form">
+                                                <form id="personal_information" autoComplete="off" 
+                                                onSubmit={ updateProfile }
+                                                noValidate="noValidate" className="bv-form">
 
                                                     <div className="col-xl-12">
                                                         <div className="input-radio">
@@ -302,28 +362,36 @@ export default function DashboardPage() {
                                                     <div className="col-xl-12">
                                                         <div className="form-group has-feedback">
                                                             <label htmlFor="name">Name*</label>
-                                                            <input type="text" className="form-control" id="name" name="name" data-bv-field="name" />
+                                                            <input type="text" className="form-control" id="name" name="name" 
+                                                            defaultValue={userProfile.name}
+                                                            data-bv-field="name" />
                                                         </div>
                                                     </div>
 
                                                     <div className="col-xl-12">
                                                         <div className="form-group has-feedback">
                                                             <label htmlFor="name">Email*</label>
-                                                            <input type="text" className="form-control" id="email" name="email" placeholdere="sultankhan.wscube@gmail.com" readOnly="readOnly" data-bv-field="email" />
+                                                            <input type="text" className="form-control" id="email" placeholdere="sultankhan.wscube@gmail.com" 
+                                                            defaultValue={userProfile.email}
+                                                            readOnly="readOnly" data-bv-field="email" />
                                                         </div>
                                                     </div>
 
                                                     <div className="col-xl-12">
                                                         <div className="form-group has-feedback">
                                                             <label htmlFor="name">Mobile Number*</label>
-                                                            <input type="text" className="form-control numeric" id="mobile_number" maxLength="15" name="mobile_number" data-bv-field="mobile_number" />
+                                                            <input type="text" className="form-control numeric" id="mobile_number" maxLength="15" 
+                                                            defaultValue={userProfile.mobile_number}
+                                                            name="mobile_number" data-bv-field="mobile_number" />
                                                         </div>
                                                     </div>
 
                                                     <div className="col-xl-12">
                                                         <div className="form-group has-feedback">
                                                             <label htmlFor="name">Address*</label>
-                                                            <input type="text" className="form-control" name="address" id="address"  data-bv-field="address" />
+                                                            <input type="text" className="form-control" name="address" id="address"  
+                                                            
+                                                            data-bv-field="address" />
                                                         </div>
                                                     </div>
 
